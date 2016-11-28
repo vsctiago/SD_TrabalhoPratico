@@ -35,8 +35,8 @@ public class ClientRead extends Thread {
                     break;
                 }
             }
-            Client.closeInput();
             in.close();
+            Client.closeInput();
             
         } catch (IOException e) {
             System.out.println(e);

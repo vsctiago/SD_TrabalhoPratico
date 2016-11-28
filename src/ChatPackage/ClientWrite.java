@@ -31,8 +31,10 @@ public class ClientWrite extends Thread {
             out = new PrintWriter(cs.getOutputStream(), true);
             input = new BufferedReader(new InputStreamReader(System.in));
             
+            String msg;
             while (!Client.isClosed()) {
-                out.println(input.readLine());
+                msg = input.readLine();
+                out.println(msg);
             }
             
             out.close();

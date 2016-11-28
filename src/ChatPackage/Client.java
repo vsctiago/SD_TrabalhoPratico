@@ -5,10 +5,7 @@
  */
 package ChatPackage;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
@@ -29,13 +26,21 @@ public class Client extends Thread {
 
         try {
             
-            new Thread(new ClientWrite(cs)).start();
-            new Thread(new ClientRead(cs)).start();
-
-            if(closed) {
-                cs.close();
+            Thread ClientWrite = new Thread(new ClientWrite(cs));
+            Thread ClientRead = new Thread(new ClientRead(cs));
+            
+            ClientWrite.start();
+            ClientRead.start();
+            
+            try {
+                ClientWrite.join();
+                ClientRead.join();
+            } catch (InterruptedException e) {
+                System.out.println(e);
             }
 
+            cs.close();
+            
         } catch (IOException e) {
             System.out.println(e);
         }
