@@ -32,7 +32,9 @@ public class Client extends Thread {
             new Thread(new ClientWrite(cs)).start();
             new Thread(new ClientRead(cs)).start();
 
-            cs.close();
+            if(closed) {
+                cs.close();
+            }
 
         } catch (IOException e) {
             System.out.println(e);
