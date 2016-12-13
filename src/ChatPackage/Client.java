@@ -7,6 +7,8 @@ package ChatPackage;
 
 import Multicast.*;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.net.Socket;
 
 /**
@@ -16,7 +18,10 @@ import java.net.Socket;
 public class Client extends Thread {
 
     static Socket cs = null;
-    private static boolean closed = false;
+    static InetAddress group;
+    static MulticastSocket ms;
+    static int porta = 6789;
+    static boolean closed = false;
 
     public static void main(String[] args) throws IOException {
         try {
@@ -26,20 +31,24 @@ public class Client extends Thread {
         }
 
         FileList file = new FileList("dadasda");
-        
+
         try {
-            
+
+            group = InetAddress.getByName("230.1.1.1");
+            ms = new MulticastSocket(porta);
+            ms.joinGroup(group);
+
             Thread clientWrite = new Thread(new ClientWrite(cs));
             Thread clientRead = new Thread(new ClientRead(cs));
-            
-            Thread MulticastSocketSend = new MulticastSocketSend(file);
-            Thread MulticastSocketReceive = new MulticastSocketReceive();
-            
+
+            Thread MulticastSocketSend = new MulticastSocketSend(group, ms, porta, file);
+            Thread MulticastSocketReceive = new MulticastSocketReceive(group, ms);
+
             clientWrite.start();
             clientRead.start();
             MulticastSocketSend.start();
             MulticastSocketReceive.start();
-            
+
             try {
                 clientWrite.join();
                 clientRead.join();
@@ -48,7 +57,7 @@ public class Client extends Thread {
             }
 
             cs.close();
-            
+
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -61,6 +70,5 @@ public class Client extends Thread {
     public synchronized static void closeInput() {
         Client.closed = true;
     }
-    
-    
+
 }
