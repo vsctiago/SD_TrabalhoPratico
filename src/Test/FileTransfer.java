@@ -24,9 +24,9 @@ public class FileTransfer extends Thread {
         String address;
         int port;
         if (x == 1) {
-            DownloadFile(port);
+            //DownloadFile(6789);
         } else {
-            SendFile(address, port);
+            //SendFile("230.1.1.1", 6789);
         }
     }
 
