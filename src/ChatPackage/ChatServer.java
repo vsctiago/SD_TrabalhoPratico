@@ -8,19 +8,23 @@ package ChatPackage;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  *
  * @author Tiago Fernandes
  */
-public class TcpMultiServer {
+public class ChatServer {
 
     static ServerSocket ss = null;
     static Socket cs = null;
     static boolean listening = true;
     
-    static int maxClients = 10;
-    static SClientThread[] clients = new SClientThread[maxClients];
+    static final int MAXCLIENTS = 10;
+    static SClientThread[] clients = new SClientThread[MAXCLIENTS];
+    static ArrayList<UserInfo> clientDB = new ArrayList<>();
+    
+    static int guestCount;
 
     public static void main(String[] args) throws IOException {
         try {
@@ -32,7 +36,7 @@ public class TcpMultiServer {
         try {
             while (listening) {
                 cs = ss.accept();
-                for(int i = 0; i < maxClients; i++) {
+                for(int i = 0; i < MAXCLIENTS; i++) {
                     if(clients[i] == null) {
                         (clients[i] = new SClientThread(cs, clients)).start();
                         break;
@@ -47,4 +51,6 @@ public class TcpMultiServer {
             System.out.println(e);
         }
     }
+    
+    
 }
