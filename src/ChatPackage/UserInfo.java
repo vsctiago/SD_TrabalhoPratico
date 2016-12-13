@@ -14,9 +14,12 @@ class UserInfo {
     private String username;
     private String password;
     private String directory;
+
+    public UserInfo() {}
     
     public UserInfo(String username, String password) {
-        
+        this.username = username;
+        this.password = password;
     }
     
     public String getUsername() {

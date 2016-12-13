@@ -22,9 +22,18 @@ public class ChatServer {
     
     static final int MAXCLIENTS = 10;
     static SClientThread[] clients = new SClientThread[MAXCLIENTS];
-    static ArrayList<UserInfo> clientDB = new ArrayList<>();
+    static ArrayList<UserInfo> userDB = new ArrayList<>();
     
     static int guestCount;
+    static String chatDirectory = "C:\\ChatApp";
+    static String[] cmds = new String[]{
+        "/reg \t\t-> Signup user.",
+        "/log \t\t-> Login user.",
+        "/users \t\t-> List all users connected.",
+        "/files \t\t-> List all files from users connected.",
+        "/myfiles \t-> List all my files.",
+        "/dl \t\t-> Download one or more files from one user.",
+        "/quit or /logout \t-> Logout and leaves chat."};
 
     public static void main(String[] args) throws IOException {
         try {

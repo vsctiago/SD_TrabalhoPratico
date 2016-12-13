@@ -6,10 +6,12 @@
 package ChatPackage;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Iterator;
 
 /**
  *
@@ -25,8 +27,7 @@ public class SClientThread extends Thread {
     private boolean listening = true;
     
     private String msg;
-    private String name;
-    private String pass;
+    private UserInfo myInfo = new UserInfo();
 
     public SClientThread(Socket cs, SClientThread[] threads) {
         this.cs = cs;
@@ -42,41 +43,51 @@ public class SClientThread extends Thread {
         try {
             in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
             out = new PrintWriter(cs.getOutputStream(), true);
-
-            fill(); //TODO: É PARA TIRAR!!!!!!
             
             //Assigning Guest name and incrementing Guest count.
-            this.name = "guest"+ChatServer.guestCount;
+            this.myInfo.setUsername("guest"+ChatServer.guestCount);
+            out.println("# Welcome " + this.myInfo.getUsername() + ".");
             incGuestCount();
             
             //Notifying all users in chat that someone arrived!
             for (int i = 0; i < maxClientsCount; i++) {
                 if (threads[i] != null && threads[i] != this) {
-                    threads[i].out.println("*** " + name + " entered the chat! ***");
+                    threads[i].out.println("# " + this.myInfo.getUsername() + " joined chat!");
                 }
             }
 
             while (listening) {
                 msg = in.readLine().trim();
                 if (msg != null) {
-                    if (msg.startsWith("/quit")) {
+                    if (msg.startsWith("/quit") || msg.startsWith("/logout")) {
                         break;
-                    }
-                    if(msg.startsWith("/reg")) {
+                    } else if(msg.startsWith("/reg")) {
                         String[] regparams = msg.split("\\s+");
                         userRegister(regparams);
-                    }
-                    if (msg.startsWith("/list")) {
-                        this.out.println();
-                    }
-                    for (int i = 0; i < maxClientsCount; i++) {
-                        if (threads[i] != null && threads[i] != this) {
-                            threads[i].out.println("<" + name + ">: " + msg);
+                    } else if(msg.startsWith("/help")) {
+                        out.println("# Chat Commands: ");
+                        for(String item : ChatServer.cmds) {
+                            out.println(item);
+                        }
+                    } else if(msg.startsWith("/log")) {
+                        String[] regparams = msg.split("\\s+");
+                        userLogin(regparams);
+                    } else if(msg.startsWith("/users")) {
+                        listAllUsers();
+                    } else if(msg.startsWith("/files")) {
+                        //TODO: listar ficheiro de um utilizador
+                    } else if(msg.startsWith("/myfiles")) {
+                        //TODO: listar os meus ficheiros
+                    } else {
+                        for (int i = 0; i < maxClientsCount; i++) {
+                            if (threads[i] != null && threads[i] != this) {
+                                threads[i].out.println("<" + this.myInfo.getUsername() + ">: " + msg);
+                            }
                         }
                     }
                 }
             }
-            //Clear position in threads to free space for another connection
+            //Clear position in threads to free space for another connection.
             for (int i = 0; i < maxClientsCount; i++) {
                 if (threads[i] == this) {
                     threads[i] = null;
@@ -92,6 +103,25 @@ public class SClientThread extends Thread {
         }
     }
 
+    //List all connected users.
+    private void listAllUsers() {
+        out.println("Users list:");
+        for(SClientThread t : threads) {
+            if(t != this)
+                out.println(t.myInfo.getUsername());
+        }
+    }
+    
+    //Informs users that a guest is now registered.
+    private void msgGuestSignedUp(String guestName) {
+        for (int i = 0; i < this.maxClientCount; i++) {
+            if (threads[i] != null && threads[i] != this) {
+                threads[i].out.println("# " + guestName + " is now " + this.myInfo.getUsername() + " !");
+            }
+        }
+    }
+    
+    //Increments Guest count.
     private synchronized void incGuestCount() {
         ChatServer.guestCount++;
         if(ChatServer.guestCount == Integer.MAX_VALUE) {
@@ -99,75 +129,75 @@ public class SClientThread extends Thread {
         }
     }
     
-    private void userRegister(String[] params) {
-        if(params.length > 4) {
-            out.println("[Registration] Wrong format used!");
-            out.println("[Registration] Ex: /reg username password password");
+    //User signup.
+    private synchronized void userRegister(String[] params) {
+        if(params.length != 4) {
+            out.println("# [Reg] Wrong format used!");
+            out.println("# [Reg] Ex: /reg username password password");
         } else {
             if(validateRegister(params)) {
-                UserInfo newClient = new UserInfo(params[1], params[2]);
-                ChatServer.clientDB.add(newClient);
-            } else {
-                out.println("[Registration] Wrong format used!");
-                out.println("[Registration] Username and password can only contain AlphaNumeric characters!");
+                UserInfo newUser = new UserInfo(params[1], params[2]);
+                ChatServer.userDB.add(newUser);
+                out.println("# [Reg] Account created successfully!");
+                out.println("# [Reg] Logging in...");
+                String guestName = this.myInfo.getUsername();
+                //TODO: inserir newUser nos connectedUsers!
+                this.myInfo = newUser;
+                File newDir = new File(ChatServer.chatDirectory + '\\' + this.myInfo.getUsername());
+                newDir.mkdirs();
+                out.println("# Welcome " + this.myInfo.getUsername() + ".");
+                msgGuestSignedUp(guestName);
             }
         }
     }
     
+    //Validates information for user signup.
     private boolean validateRegister(String[] params) {
         String pattern = "^[a-zA-Z0-9]*$";
         for(int i = 1; i < params.length; i++){
             if(!params[i].matches(pattern)) {
+                out.println("# [Reg] Username and password can only contain AlphaNumeric characters!");
                 return false;
             }
         }
-        //TODO: validar se as duas passes sao iguais
+        if(!params[2].equals(params[3])) {
+            out.println("# [Reg] Passwords must match!");
+            return false;
+        }
         return true;
     }
     
-    private boolean login() throws IOException {
-        boolean validated = false;
-        int position;
-        
-        out.println("[Login] Enter your username.");
-        name = in.readLine().trim();
-        position = userExists();
-        if (position != -1) {
-            validated = checkPassword(position);
-            if (validated) {
-                out.println("[Login] Welcome " + name + ".");
-                return true;
-            } else {
-                out.println("[Login] Wrong password!");
-                return false;
-            }
+    //User login.
+    private void userLogin(String[] params) {
+        if(params.length != 3) {
+            out.println("# [Log] Wrong format used!");
+            out.println("# [Log] Ex: /log username password");
         } else {
-            out.println("[Login] Username doesn't exist!");
-            return false;
-        }
-    }
-
-    private int userExists() {
-        for (UserInfo cInfo : ChatServer.clientDB) {
-            if (cInfo.getUsername().equals(name)) {
-                return ChatServer.clientDB.indexOf(cInfo);
+            UserInfo tmp;
+            if((tmp = validateLogin(params)) != null) {
+                this.myInfo = tmp;
+                out.println("# [Log] Logging in as " + this.myInfo.getUsername() + ".");
+                out.println("# Welcome " + this.myInfo.getUsername() + ".");
             }
         }
-        return -1;
     }
-
-    private boolean checkPassword(int position) throws IOException {
-        out.println("[Login] Enter your password.");
-        pass = in.readLine().trim();
-        return ChatServer.clientDB.get(position).getPassword().equals(pass);
+    
+    //Validates information for user login.
+    private UserInfo validateLogin(String[] params) {
+        Iterator<UserInfo> it = ChatServer.userDB.iterator();
+        while(it.hasNext()) {
+            UserInfo user = it.next();
+            if(user.getUsername().equals(params[1])) {
+                if(user.getPassword().equals(params[2])) {
+                    return user;
+                } else {
+                    out.println("# [Log] Wrong password!");
+                    return null;
+                }
+            }
+        }
+        out.println("# [Log] That username doesn't exist!");
+        return null;
     }
-
-    private void fill() {
-        UserInfo ci = new UserInfo("cenas", "cenas");
-        ChatServer.clientDB.add(ci);
-        UserInfo co = new UserInfo("coisas", "coisas");
-        ChatServer.clientDB.add(co);
-        UserInfo ca = new UserInfo("yolo", "yolo");
-        ChatServer.clientDB.add(ca);
-    }
+    
 }
