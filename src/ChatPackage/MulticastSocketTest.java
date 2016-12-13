@@ -18,7 +18,7 @@ public class MulticastSocketTest extends Thread {
     
     @Override
     public void run() {
-        // join a Multicast group and send the group salutations
+        
         String msg = "Hello";
         
         try {
@@ -41,14 +41,12 @@ public class MulticastSocketTest extends Thread {
         
         DatagramPacket hi = new DatagramPacket(msg.getBytes(), msg.length(),group, 6789);
 
-        
         try {
             s.send(hi);
         } catch (Exception e) {
             System.out.println(e);
         }
         
-        // get their responses!
         byte[] buf = new byte[1000];
         DatagramPacket recv = new DatagramPacket(buf, buf.length);
 
@@ -59,7 +57,6 @@ public class MulticastSocketTest extends Thread {
         }
         
         msg = s.toString();
-        // OK, I'm done talking - leave the group...
         
         try {
             s.leaveGroup(group);
