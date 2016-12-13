@@ -10,27 +10,26 @@ public class MulticastSocketSend extends Thread {
 
     private InetAddress group;
     private MulticastSocket ms;
-    private int porta;
     private FileList fileClient;
     private Boolean close = false;
 
-    public MulticastSocketSend(InetAddress group, MulticastSocket ms, 
-            int porta, FileList fileClient) {
-        this.group = group;
-        this.ms = ms;
-        this.porta = porta;
+    public MulticastSocketSend(FileList fileClient) {
         this.fileClient = fileClient;
     }
 
     @Override
     public void run() {
-        try {           
+        try {
+            group = InetAddress.getByName("230.1.1.1");
+            ms = new MulticastSocket(6789);
+            ms.joinGroup(group);
+           
             while (!close) {
                 ByteArrayOutputStream byteArr = new ByteArrayOutputStream();
                 ObjectOutputStream objOut = new ObjectOutputStream(byteArr);
                 objOut.writeObject(fileClient);
                 byte[] buf = byteArr.toByteArray();
-                DatagramPacket fileList = new DatagramPacket(buf, buf.length, group, porta);
+                DatagramPacket fileList = new DatagramPacket(buf, buf.length, group, 6789);
                 ms.send(fileList);
                 System.out.println("Package is sent!");
                 sleep(600000);

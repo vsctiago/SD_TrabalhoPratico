@@ -1,8 +1,6 @@
 package Multicast;
 
-import java.io.Serializable;
-
-public class FileList implements Serializable{
+public class FileList {
 
     private String clientName;
     private String[] fileName;
