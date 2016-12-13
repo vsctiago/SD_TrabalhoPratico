@@ -64,20 +64,32 @@ public class SClientThread extends Thread {
                     } else if(msg.startsWith("/reg")) {
                         String[] regparams = msg.split("\\s+");
                         userRegister(regparams);
+                    } else if(msg.startsWith("/log")) {
+                        String[] regparams = msg.split("\\s+");
+                        userLogin(regparams);
                     } else if(msg.startsWith("/help")) {
                         out.println("# Chat Commands: ");
                         for(String item : ChatServer.cmds) {
                             out.println(item);
                         }
-                    } else if(msg.startsWith("/log")) {
-                        String[] regparams = msg.split("\\s+");
-                        userLogin(regparams);
                     } else if(msg.startsWith("/users")) {
-                        listAllUsers();
+                         if(this.myInfo.isLogged()) {
+                             listAllUsers();
+                         } else {
+                             out.println("# Guests don't have access to this command.");
+                         }
                     } else if(msg.startsWith("/files")) {
-                        //TODO: listar ficheiro de um utilizador
+                        if(this.myInfo.isLogged()) {
+                            //TODO: listar ficheiros de um utilizador
+                        } else {
+                            out.println("# Guests don't have access to this command.");
+                        }
                     } else if(msg.startsWith("/myfiles")) {
-                        //TODO: listar os meus ficheiros
+                        if(this.myInfo.isLogged()) {
+                            //TODO: listar os meus ficheiros
+                        } else {
+                            out.println("# Guests don't have access to this command.");
+                        }
                     } else {
                         for (int i = 0; i < maxClientsCount; i++) {
                             if (threads[i] != null && threads[i] != this) {
@@ -107,7 +119,7 @@ public class SClientThread extends Thread {
     private void listAllUsers() {
         out.println("Users list:");
         for(SClientThread t : threads) {
-            if(t != this)
+            if(t != null && t != this)
                 out.println(t.myInfo.getUsername());
         }
     }
@@ -125,7 +137,7 @@ public class SClientThread extends Thread {
     private synchronized void incGuestCount() {
         ChatServer.guestCount++;
         if(ChatServer.guestCount == Integer.MAX_VALUE) {
-            ChatServer.guestCount = 0;
+            ChatServer.guestCount = 1;
         }
     }
     
@@ -136,7 +148,7 @@ public class SClientThread extends Thread {
             out.println("# [Reg] Ex: /reg username password password");
         } else {
             if(validateRegister(params)) {
-                UserInfo newUser = new UserInfo(params[1], params[2]);
+                UserInfo newUser = new UserInfo(params[1], params[2], true);
                 ChatServer.userDB.add(newUser);
                 out.println("# [Reg] Account created successfully!");
                 out.println("# [Reg] Logging in...");
@@ -176,6 +188,12 @@ public class SClientThread extends Thread {
             UserInfo tmp;
             if((tmp = validateLogin(params)) != null) {
                 this.myInfo = tmp;
+                File dir = new File(ChatServer.chatDirectory + '\\' + this.myInfo.getUsername());
+                if(!dir.exists()) {
+                    out.println("# [Log] Your Files folder was wiped somehow.");
+                    out.println("# [Log] Creating another one...");
+                    dir.mkdirs();
+                }
                 out.println("# [Log] Logging in as " + this.myInfo.getUsername() + ".");
                 out.println("# Welcome " + this.myInfo.getUsername() + ".");
             }

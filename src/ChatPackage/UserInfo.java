@@ -14,12 +14,18 @@ class UserInfo {
     private String username;
     private String password;
     private String directory;
+    private boolean logged = false;
 
     public UserInfo() {}
     
-    public UserInfo(String username, String password) {
+    public UserInfo(String username) {
+        this.username = username;
+    }
+    
+    public UserInfo(String username, String password, boolean logged) {
         this.username = username;
         this.password = password;
+        this.logged = logged;
     }
     
     public String getUsername() {
@@ -44,6 +50,14 @@ class UserInfo {
 
     public void setDirectory(String directory) {
         this.directory = directory;
+    }
+
+    public boolean isLogged() {
+        return logged;
+    }
+
+    public void setLogged(boolean logged) {
+        this.logged = logged;
     }
     
     

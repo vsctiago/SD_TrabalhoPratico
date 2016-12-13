@@ -24,7 +24,7 @@ public class ChatServer {
     static SClientThread[] clients = new SClientThread[MAXCLIENTS];
     static ArrayList<UserInfo> userDB = new ArrayList<>();
     
-    static int guestCount;
+    static int guestCount = 1;
     static String chatDirectory = "C:\\ChatApp";
     static String[] cmds = new String[]{
         "/reg \t\t-> Signup user.",
