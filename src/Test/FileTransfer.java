@@ -1,4 +1,4 @@
-package ChatPackage;
+package Test;
 
 import java.io.File;
 import java.io.FileInputStream;
