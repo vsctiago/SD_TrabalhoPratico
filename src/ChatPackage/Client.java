@@ -5,6 +5,7 @@
  */
 package ChatPackage;
 
+import Multicast.*;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -24,17 +25,24 @@ public class Client extends Thread {
             System.out.println(e);
         }
 
+        FileList file = new FileList("dadasda");
+        
         try {
             
-            Thread ClientWrite = new Thread(new ClientWrite(cs));
-            Thread ClientRead = new Thread(new ClientRead(cs));
+            Thread clientWrite = new Thread(new ClientWrite(cs));
+            Thread clientRead = new Thread(new ClientRead(cs));
             
-            ClientWrite.start();
-            ClientRead.start();
+            Thread MulticastSocketSend = new MulticastSocketSend(file);
+            Thread MulticastSocketReceive = new MulticastSocketReceive();
+            
+            clientWrite.start();
+            clientRead.start();
+            MulticastSocketSend.start();
+            MulticastSocketReceive.start();
             
             try {
-                ClientWrite.join();
-                ClientRead.join();
+                clientWrite.join();
+                clientRead.join();
             } catch (InterruptedException e) {
                 System.out.println(e);
             }
