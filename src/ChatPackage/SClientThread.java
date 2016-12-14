@@ -80,6 +80,12 @@ public class SClientThread extends Thread {
                          } else {
                              out.println("# Guests don't have access to this command.");
                          }
+                    } else if(msg.equals("/fupdate")) {
+                        if(this.myInfo.isLogged()) {
+                            out.println(msg);
+                        } else {
+                            out.println("# Guests don't have access to this command.");
+                        }
                     } else if(msg.startsWith("/files")) {
                         if(this.myInfo.isLogged()) {
                             //TODO: listar ficheiros de um utilizador
