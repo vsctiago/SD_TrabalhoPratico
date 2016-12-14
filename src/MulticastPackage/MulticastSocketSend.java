@@ -14,7 +14,7 @@ public class MulticastSocketSend extends Thread {
     private final FileList fileClient;
     private Boolean close = false;
 
-    public MulticastSocketSend(InetAddress group, MulticastSocket ms, 
+    public MulticastSocketSend(InetAddress group, MulticastSocket ms,
             int porta, FileList fileClient) {
         this.group = group;
         this.ms = ms;
@@ -24,7 +24,7 @@ public class MulticastSocketSend extends Thread {
 
     @Override
     public void run() {
-        try {           
+        try {
             while (!close) {
                 ByteArrayOutputStream byteArr = new ByteArrayOutputStream();
                 ObjectOutputStream objOut = new ObjectOutputStream(byteArr);
@@ -33,7 +33,13 @@ public class MulticastSocketSend extends Thread {
                 DatagramPacket fileList = new DatagramPacket(buf, buf.length, group, porta);
                 ms.send(fileList);
                 System.out.println("Package is sent!");
-                sleep(600000);
+
+                try {
+                    Thread.sleep(600000);
+                } catch (InterruptedException e) {
+                    System.out.println("Exception handled " + e);
+                }
+
             }
         } catch (Exception e) {
             System.out.println("Multicast Send -> " + e);
