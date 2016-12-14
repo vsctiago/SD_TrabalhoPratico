@@ -18,6 +18,7 @@ public class ClientRead extends Thread {
 
     Socket cs = null;
     BufferedReader in = null;
+    Thread multicastSocketSend;
     
     public ClientRead(Socket cs) {
         this.cs = cs;
@@ -33,6 +34,8 @@ public class ClientRead extends Thread {
                 System.out.println(msg);
                 if (msg.startsWith("/quit")) {
                     break;
+                } else if(msg.equals("/fupdate")) {
+                    
                 }
             }
             in.close();
@@ -42,4 +45,10 @@ public class ClientRead extends Thread {
             System.out.println(e);
         }
     }
+
+    public void setMulticastSocketSend(Thread multicastSocketSend) {
+        this.multicastSocketSend = multicastSocketSend;
+    }
+    
+    
 }

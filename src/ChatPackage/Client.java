@@ -56,6 +56,8 @@ public class Client extends Thread {
             Thread multicastSocketSend = new Thread(new MulticastSocketSend(group, ms, portaMulticast, file));
             Thread multicastSocketReceive = new Thread(new MulticastSocketReceive(ms, fileList));
 
+            ((ClientRead)clientRead).setMulticastSocketSend(multicastSocketSend);
+            
             clientWrite.start();
             clientRead.start();
             multicastSocketSend.start();
@@ -85,5 +87,10 @@ public class Client extends Thread {
         Client.closed = true;
     }
 
+    public static UserInfo getUserinfo() {
+        return userinfo;
+    }
+
+    
     
 }
