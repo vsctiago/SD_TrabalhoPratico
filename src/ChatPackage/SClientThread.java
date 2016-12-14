@@ -46,6 +46,8 @@ public class SClientThread extends Thread {
             
             //Assigning Guest name and incrementing Guest count.
             this.myInfo.setUsername("guest"+ChatServer.guestCount);
+            Client.userinfo = this.myInfo;
+            out.println("Client.userinfo = " + Client.userinfo.getUsername());
             out.println("# Welcome " + this.myInfo.getUsername() + ".");
             incGuestCount();
             
@@ -155,6 +157,7 @@ public class SClientThread extends Thread {
                 String guestName = this.myInfo.getUsername();
                 //TODO: inserir newUser nos connectedUsers!
                 this.myInfo = newUser;
+                Client.userinfo = this.myInfo;
                 File newDir = new File(ChatServer.chatDirectory + '\\' + this.myInfo.getUsername());
                 newDir.mkdirs();
                 out.println("# Welcome " + this.myInfo.getUsername() + ".");
@@ -188,6 +191,7 @@ public class SClientThread extends Thread {
             UserInfo tmp;
             if((tmp = validateLogin(params)) != null) {
                 this.myInfo = tmp;
+                Client.userinfo = this.myInfo;
                 File dir = new File(ChatServer.chatDirectory + '\\' + this.myInfo.getUsername());
                 if(!dir.exists()) {
                     out.println("# [Log] Your Files folder was wiped somehow.");

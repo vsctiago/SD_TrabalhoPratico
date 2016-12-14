@@ -33,6 +33,8 @@ public class Client extends Thread {
     static int portaMulticast = 6789;
     static boolean closed = false;
     
+    static UserInfo userinfo;
+    
     public static void main(String[] args) throws IOException {
         try {
             cs = new Socket(ipChatServe, portaChatServe);
@@ -51,17 +53,17 @@ public class Client extends Thread {
             Thread clientWrite = new Thread(new ClientWrite(cs));
             Thread clientRead = new Thread(new ClientRead(cs));
 
-            Thread MulticastSocketSend = new Thread(new MulticastSocketSend(group, ms, portaMulticast, file));
-            Thread MulticastSocketReceive = new Thread(new MulticastSocketReceive(ms, fileList));
+            Thread multicastSocketSend = new Thread(new MulticastSocketSend(group, ms, portaMulticast, file));
+            Thread multicastSocketReceive = new Thread(new MulticastSocketReceive(ms, fileList));
 
             clientWrite.start();
             clientRead.start();
-            MulticastSocketSend.start();
-            MulticastSocketReceive.start();
+            multicastSocketSend.start();
+            multicastSocketReceive.start();
 
             try {
-                MulticastSocketSend.join();
-                MulticastSocketReceive.join();
+                multicastSocketSend.join();
+                multicastSocketReceive.join();
                 clientWrite.join();
                 clientRead.join();
             } catch (InterruptedException e) {
@@ -83,4 +85,5 @@ public class Client extends Thread {
         Client.closed = true;
     }
 
+    
 }
