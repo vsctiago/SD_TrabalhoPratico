@@ -1,23 +1,20 @@
-package Multicast;
+package MulticastPackage;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
-import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.ArrayList;
 
 public class MulticastSocketReceive extends Thread {
 
-    private InetAddress group;
-    private MulticastSocket ms;
-    private ArrayList<FileList> fileList;
+    private final MulticastSocket ms;
+    private final ArrayList<FileList> fileList;
     private Boolean close = false;
 
-    public MulticastSocketReceive(InetAddress group, MulticastSocket ms) {
-        this.group = group;
+    public MulticastSocketReceive(MulticastSocket ms, ArrayList<FileList> fileList) {
         this.ms = ms;
-        this.fileList  = new ArrayList<>();
+        this.fileList = fileList;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package Multicast;
+package MulticastPackage;
 
 import java.io.Serializable;
 

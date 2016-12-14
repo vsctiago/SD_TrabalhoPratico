@@ -1,4 +1,4 @@
-package Multicast;
+package MulticastPackage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
@@ -8,10 +8,10 @@ import java.net.MulticastSocket;
 
 public class MulticastSocketSend extends Thread {
 
-    private InetAddress group;
-    private MulticastSocket ms;
-    private int porta;
-    private FileList fileClient;
+    private final InetAddress group;
+    private final MulticastSocket ms;
+    private final int porta;
+    private final FileList fileClient;
     private Boolean close = false;
 
     public MulticastSocketSend(InetAddress group, MulticastSocket ms, 

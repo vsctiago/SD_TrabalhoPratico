@@ -5,11 +5,14 @@
  */
 package ChatPackage;
 
-import Multicast.*;
+import MulticastPackage.MulticastSocketSend;
+import MulticastPackage.FileList;
+import MulticastPackage.MulticastSocketReceive;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  *
@@ -19,13 +22,20 @@ public class Client extends Thread {
 
     static Socket cs = null;
     static InetAddress group;
+    
+    static String ipChatServe = "localhost";
+    static int portaChatServe = 4444;
+    
     static MulticastSocket ms;
-    static int porta = 6789;
+    static ArrayList<FileList> fileList = new ArrayList<>();
+    
+    static String ipMulticast = "230.1.1.1";
+    static int portaMulticast = 6789;
     static boolean closed = false;
-
+    
     public static void main(String[] args) throws IOException {
         try {
-            cs = new Socket("localhost", 4444);
+            cs = new Socket(ipChatServe, portaChatServe);
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -34,15 +44,15 @@ public class Client extends Thread {
 
         try {
 
-            group = InetAddress.getByName("230.1.1.1");
-            ms = new MulticastSocket(porta);
+            group = InetAddress.getByName(ipMulticast);
+            ms = new MulticastSocket(portaMulticast);
             ms.joinGroup(group);
 
             Thread clientWrite = new Thread(new ClientWrite(cs));
             Thread clientRead = new Thread(new ClientRead(cs));
 
-            Thread MulticastSocketSend = new MulticastSocketSend(group, ms, porta, file);
-            Thread MulticastSocketReceive = new MulticastSocketReceive(group, ms);
+            Thread MulticastSocketSend = new Thread(new MulticastSocketSend(group, ms, portaMulticast, file));
+            Thread MulticastSocketReceive = new Thread(new MulticastSocketReceive(ms, fileList));
 
             clientWrite.start();
             clientRead.start();
@@ -50,6 +60,8 @@ public class Client extends Thread {
             MulticastSocketReceive.start();
 
             try {
+                MulticastSocketSend.join();
+                MulticastSocketReceive.join();
                 clientWrite.join();
                 clientRead.join();
             } catch (InterruptedException e) {
