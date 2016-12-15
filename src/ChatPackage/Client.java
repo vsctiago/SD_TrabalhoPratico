@@ -53,7 +53,7 @@ public class Client extends Thread {
             Thread clientWrite = new ClientWrite(cs);
             Thread clientRead = new ClientRead(cs);
 
-            Thread multicastSocketSend = new MulticastSocketSend(group, ms, portaMulticast, file);
+            Thread multicastSocketSend = new MulticastSocketSend(group, ms, portaMulticast);
             Thread multicastSocketReceive = new MulticastSocketReceive(ms, fileList);
 
             ((ClientRead)clientRead).setMulticastSocketSend(multicastSocketSend);
