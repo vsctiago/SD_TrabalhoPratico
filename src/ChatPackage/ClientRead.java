@@ -19,6 +19,7 @@ public class ClientRead extends Thread {
     Socket cs = null;
     BufferedReader in = null;
     Thread multicastSocketSend;
+    Thread multicastSocketReceive;
     
     public ClientRead(Socket cs) {
         this.cs = cs;
@@ -31,11 +32,16 @@ public class ClientRead extends Thread {
             
             String msg;
             while ((msg = in.readLine()) != null) {
-                System.out.println(msg);
                 if (msg.startsWith("/quit")) {
+                    System.out.println(msg);
                     break;
                 } else if(msg.equals("/fupdate")) {
                     
+                } else if(msg.equals("# [INTERNAL] Logged in.")) {
+                    startMulticastSocketSend();
+                    startMulticastSocketReceive();
+                } else {
+                    System.out.println(msg);
                 }
             }
             in.close();
@@ -49,6 +55,17 @@ public class ClientRead extends Thread {
     public void setMulticastSocketSend(Thread multicastSocketSend) {
         this.multicastSocketSend = multicastSocketSend;
     }
+
+    public void setMulticastSocketReceive(Thread multicastSocketReceive) {
+        this.multicastSocketReceive = multicastSocketReceive;
+    }
     
+    public void startMulticastSocketSend() {
+        this.multicastSocketSend.start();
+    }
+    
+    public void startMulticastSocketReceive() {
+        this.multicastSocketReceive.start();
+    }
     
 }

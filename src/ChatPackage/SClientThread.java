@@ -205,6 +205,7 @@ public class SClientThread extends Thread {
                     dir.mkdirs();
                 }
                 out.println("# [Log] Logging in as " + this.myInfo.getUsername() + ".");
+                out.println("# [INTERNAL] Logged in.");
                 out.println("# Welcome " + this.myInfo.getUsername() + ".");
             }
         }

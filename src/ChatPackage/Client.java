@@ -42,8 +42,6 @@ public class Client extends Thread {
             System.out.println(e);
         }
 
-        FileList file = new FileList("dadasda");
-
         try {
 
             group = InetAddress.getByName(ipMulticast);
@@ -57,15 +55,12 @@ public class Client extends Thread {
             Thread multicastSocketReceive = new MulticastSocketReceive(ms, fileList);
 
             ((ClientRead)clientRead).setMulticastSocketSend(multicastSocketSend);
+            ((ClientRead)clientRead).setMulticastSocketReceive(multicastSocketReceive);
             
             clientWrite.start();
             clientRead.start();
-            multicastSocketSend.start();
-            multicastSocketReceive.start();
 
             try {
-                multicastSocketSend.join();
-                multicastSocketReceive.join();
                 clientWrite.join();
                 clientRead.join();
             } catch (InterruptedException e) {
