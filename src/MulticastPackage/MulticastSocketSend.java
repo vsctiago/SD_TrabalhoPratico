@@ -15,13 +15,13 @@ public class MulticastSocketSend extends Thread {
     private final InetAddress group;
     private final MulticastSocket ms;
     private final int porta;
-    private final FileList fileClient;
+    private FileList fileClient;
     private Boolean close = false;
 
     public MulticastSocketSend(InetAddress group, MulticastSocket ms, int porta) {
         this.group = group;
         this.ms = ms;
-        this.fileClient = null;
+        this.fileClient = new FileList();
         this.porta = porta;
     }
 
@@ -53,6 +53,9 @@ public class MulticastSocketSend extends Thread {
     public File[] listDir(File dir) {
         ArrayList<File> enc = new ArrayList<>();
         File[] files = dir.listFiles();
+        for (File f : files) {
+            System.out.println(f.getName());
+        }
         for (int i = 0; i < files.length; i++) {
             if (files[i].isDirectory()) {
                 //Adiciona no Vector os arquivos encontrados dentro de 'files[i]':
@@ -74,15 +77,16 @@ public class MulticastSocketSend extends Thread {
     }
 
     public void FilesList() {
-        UserInfo client = new UserInfo();
-        client = Client.getUserinfo();
+        UserInfo client =  Client.getUserinfo();
         System.out.println(client.getUsername());
+        System.out.println(client.getDirectory());
         File dir = new File(client.getDirectory());
         File[] files = listDir(dir);
         if (files != null) {
-            fileClient.setClientName(client.getUsername());
+            this.fileClient.setClientName(client.getUsername());
+            System.out.println(files[0].getName());
             for (int i = 0; i < files.length; i++) {
-                fileClient.setFileName(i, files[i].getPath() + files[i].getName());
+                this.fileClient.setFileName(files[i].getName());
             }
         }
     }
