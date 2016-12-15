@@ -32,6 +32,7 @@ public class ClientWrite extends Thread {
             input = new BufferedReader(new InputStreamReader(System.in));
             
             String msg;
+            //TODO: Escrever os dados do login ou registo em variaveis temporarias para meter em userinfo.
             while (!Client.isClosed()) {
                 msg = input.readLine();
                 out.println(msg);

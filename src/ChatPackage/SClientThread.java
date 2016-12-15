@@ -46,6 +46,7 @@ public class SClientThread extends Thread {
             
             //Assigning Guest name and incrementing Guest count.
             this.myInfo.setUsername("guest"+ChatServer.guestCount);
+            //TODO: Isto não pode estar aqui. Server não acede a variaveis do lado do Client
             Client.userinfo = this.myInfo;
             out.println("Client.userinfo = " + Client.userinfo.getUsername());
             out.println("# Welcome " + this.myInfo.getUsername() + ".");
@@ -166,6 +167,7 @@ public class SClientThread extends Thread {
                 Client.userinfo = this.myInfo;
                 File newDir = new File(ChatServer.chatDirectory + '\\' + this.myInfo.getUsername());
                 newDir.mkdirs();
+                out.println("# [INTERNAL] Start multicast.");
                 out.println("# Welcome " + this.myInfo.getUsername() + ".");
                 msgGuestSignedUp(guestName);
             }
@@ -198,6 +200,7 @@ public class SClientThread extends Thread {
             if((tmp = validateLogin(params)) != null) {
                 this.myInfo = tmp;
                 Client.userinfo = this.myInfo;
+                //TODO: Mover para o Client.
                 File dir = new File(ChatServer.chatDirectory + '\\' + this.myInfo.getUsername());
                 if(!dir.exists()) {
                     out.println("# [Log] Your Files folder was wiped somehow.");
@@ -205,7 +208,7 @@ public class SClientThread extends Thread {
                     dir.mkdirs();
                 }
                 out.println("# [Log] Logging in as " + this.myInfo.getUsername() + ".");
-                out.println("# [INTERNAL] Logged in.");
+                out.println("# [INTERNAL] Start multicast.");
                 out.println("# Welcome " + this.myInfo.getUsername() + ".");
             }
         }

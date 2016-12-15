@@ -37,7 +37,7 @@ public class ClientRead extends Thread {
                     break;
                 } else if(msg.equals("/fupdate")) {
                     
-                } else if(msg.equals("# [INTERNAL] Logged in.")) {
+                } else if(msg.equals("# [INTERNAL] Start multicast.")) {
                     startMulticastSocketSend();
                     startMulticastSocketReceive();
                 } else {
