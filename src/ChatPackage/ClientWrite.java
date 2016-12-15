@@ -26,6 +26,12 @@ public class ClientWrite extends Thread {
             //TODO: Escrever os dados do login ou registo em variaveis temporarias para meter em userinfo.
             while (!Client.isClosed()) {
                 msg = input.readLine();
+                if(msg.startsWith("/reg") || msg.startsWith("/log")) {
+                    String[] regparams = msg.split("\\s+");
+                    Client.tmpInfo.setUsername(regparams[1]);
+                    Client.tmpInfo.setPassword(regparams[2]);
+                    Client.tmpInfo.setDirectory(Client.chatDirectory + "\\" + Client.tmpInfo.getUsername());
+                }
                 out.println(msg);
             }
             

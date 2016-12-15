@@ -24,7 +24,9 @@ public class Client extends Thread {
     static int portaMulticast = 6789;
     static boolean closed = false;
     
-    static UserInfo userinfo;
+    static String chatDirectory = "C:\\ChatApp";
+    static UserInfo userinfo = new UserInfo();
+    static UserInfo tmpInfo = new UserInfo();
     
     public static void main(String[] args) throws IOException {
         try {

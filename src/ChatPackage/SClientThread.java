@@ -37,8 +37,6 @@ public class SClientThread extends Thread {
             
             //Assigning Guest name and incrementing Guest count.
             this.myInfo.setUsername("guest"+ChatServer.guestCount);
-            //TODO: Isto não pode estar aqui. Server não acede a variaveis do lado do Client
-            Client.userinfo = this.myInfo;
             out.println("# Welcome " + this.myInfo.getUsername() + ".");
             incGuestCount();
             
@@ -154,11 +152,7 @@ public class SClientThread extends Thread {
                 String guestName = this.myInfo.getUsername();
                 //TODO: inserir newUser nos connectedUsers!
                 this.myInfo = newUser;
-                Client.userinfo = newUser;
-                System.out.println(Client.userinfo.getUsername());
-                File newDir = new File(ChatServer.chatDirectory + '\\' + this.myInfo.getUsername());
-                newDir.mkdirs();
-                out.println("# [INTERNAL] Start multicast.");
+                out.println("# [INTERNAL] Logged in.");
                 out.println("# Welcome " + this.myInfo.getUsername() + ".");
                 msgGuestSignedUp(guestName);
             }
@@ -190,16 +184,8 @@ public class SClientThread extends Thread {
             UserInfo tmp;
             if((tmp = validateLogin(params)) != null) {
                 this.myInfo = tmp;
-                Client.userinfo = this.myInfo;
-                //TODO: Mover para o Client.
-                File dir = new File(ChatServer.chatDirectory + '\\' + this.myInfo.getUsername());
-                if(!dir.exists()) {
-                    out.println("# [Log] Your Files folder was wiped somehow.");
-                    out.println("# [Log] Creating another one...");
-                    dir.mkdirs();
-                }
-                out.println("# [Log] Logging in as " + this.myInfo.getUsername() + ".");
-                out.println("# [INTERNAL] Start multicast.");
+                out.println("# [Log] Logging in...");
+                out.println("# [INTERNAL] Logged in.");
                 out.println("# Welcome " + this.myInfo.getUsername() + ".");
             }
         }

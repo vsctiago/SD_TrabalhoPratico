@@ -3,6 +3,7 @@ package ChatPackage;
 import MulticastPackage.MulticastSocketReceive;
 import MulticastPackage.MulticastSocketSend;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -32,7 +33,14 @@ public class ClientRead extends Thread {
                     break;
                 } else if(msg.equals("/fupdate") && Client.userinfo.isLogged()) {
                     multicastSocketSend.interrupt();
-                } else if(msg.equals("# [INTERNAL] Start multicast.")) {
+                } else if(msg.equals("# [INTERNAL] Logged in.")) {
+                    Client.userinfo = Client.tmpInfo;
+                    Client.userinfo.setLogged(true);
+                    File dir = new File(ChatServer.chatDirectory + '\\' + Client.userinfo.getUsername());
+                    if(!dir.exists()) {
+                        System.out.println(" [Log] Creating files folder.");
+                        dir.mkdirs();
+                    }
                     startMulticastSocketSend();
                     startMulticastSocketReceive();
                 } else {
