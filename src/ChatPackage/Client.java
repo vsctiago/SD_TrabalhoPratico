@@ -20,7 +20,7 @@ public class Client extends Thread {
     static MulticastSocket ms;
     static ArrayList<FileList> fileList = new ArrayList<>();
     
-    static String ipMulticast = "230.1.1.1";
+    static String ipMulticast = "230.1.1.2";
     static int portaMulticast = 6789;
     static boolean closed = false;
     
@@ -50,10 +50,11 @@ public class Client extends Thread {
             
             clientWrite.start();
             clientRead.start();
-
+            //multicastSocketSend.interrupt();
             try {
                 clientWrite.join();
                 clientRead.join();
+                
             } catch (InterruptedException e) {
                 System.out.println(e);
             }

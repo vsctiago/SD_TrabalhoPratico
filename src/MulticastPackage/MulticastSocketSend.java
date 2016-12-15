@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class MulticastSocketSend extends Thread {
 
@@ -46,29 +46,29 @@ public class MulticastSocketSend extends Thread {
 
             }
         } catch (Exception e) {
-            System.out.println("Multicast Send -> " + e);
+            System.out.println("Exception Multicast Send -> " + e);
         }
     }
 
     public File[] listDir(File dir) {
-        Vector enc = new Vector();
+        ArrayList<File> enc = new ArrayList<>();
         File[] files = dir.listFiles();
         for (int i = 0; i < files.length; i++) {
             if (files[i].isDirectory()) {
                 //Adiciona no Vector os arquivos encontrados dentro de 'files[i]':
                 File[] recFiles = listDir(files[i]);
                 for (int j = 0; j < recFiles.length; j++) {
-                    enc.addElement(recFiles[j]);
+                    enc.add(recFiles[j]);
                 }
             } else {
                 //Adiciona no Vector o arquivo encontrado dentro de 'dir':
-                enc.addElement(files[i]);
+                enc.add(files[i]);
             }
         }
         //Transforma um Vector em um File[]:
         File[] encontrados = new File[enc.size()];
         for (int i = 0; i < enc.size(); i++) {
-            encontrados[i] = (File) enc.elementAt(i);
+            encontrados[i] = (File) enc.get(i);
         }
         return encontrados;
     }
@@ -82,7 +82,7 @@ public class MulticastSocketSend extends Thread {
         if (files != null) {
             fileClient.setClientName(client.getUsername());
             for (int i = 0; i < files.length; i++) {
-                fileClient.setFileName(i, files[i].getName());
+                fileClient.setFileName(i, files[i].getPath() + files[i].getName());
             }
         }
     }
