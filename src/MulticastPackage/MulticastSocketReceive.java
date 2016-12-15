@@ -25,12 +25,9 @@ public class MulticastSocketReceive extends Thread {
                 byte[] buf = new byte[1000];
                 DatagramPacket recv = new DatagramPacket(buf, buf.length);
                 ms.receive(recv);
-                ByteArrayInputStream b_in = new ByteArrayInputStream(recv.getData());
-                ObjectInputStream o_in = new ObjectInputStream(b_in);
-                Thread workFileList = new WorkFileList(fileList,(FileList) o_in.readObject());
+                Thread workFileList = new WorkFileList(fileList, recv);
                 workFileList.start();
                 recv.setLength(buf.length);
-                b_in.reset();
             }
         } catch (Exception e) {
             System.out.println("Exception Multicast Receive -> " + e);
