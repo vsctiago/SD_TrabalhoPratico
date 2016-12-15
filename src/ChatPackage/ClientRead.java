@@ -1,5 +1,7 @@
 package ChatPackage;
 
+import MulticastPackage.MulticastSocketReceive;
+import MulticastPackage.MulticastSocketSend;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,11 +25,13 @@ public class ClientRead extends Thread {
             
             String msg;
             while ((msg = in.readLine()) != null) {
-                if (msg.startsWith("/quit")) {
+                if (msg.startsWith("/quit") || msg.equals("/logout")) {
+                    ((MulticastSocketSend)multicastSocketSend).setClose();
+                    ((MulticastSocketReceive)multicastSocketReceive).setClose();
                     System.out.println(msg);
                     break;
-                } else if(msg.equals("/fupdate")) {
-                    
+                } else if(msg.equals("/fupdate") && Client.userinfo.isLogged()) {
+                    multicastSocketSend.interrupt();
                 } else if(msg.equals("# [INTERNAL] Start multicast.")) {
                     startMulticastSocketSend();
                     startMulticastSocketReceive();
@@ -58,5 +62,6 @@ public class ClientRead extends Thread {
     public void startMulticastSocketReceive() {
         this.multicastSocketReceive.start();
     }
+    
     
 }

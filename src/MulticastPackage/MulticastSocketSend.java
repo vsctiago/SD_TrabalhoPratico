@@ -74,7 +74,9 @@ public class MulticastSocketSend extends Thread {
     }
 
     public void FilesList() {
-        UserInfo client = Client.getUserinfo();
+        UserInfo client = new UserInfo();
+        client = Client.getUserinfo();
+        System.out.println(client.getUsername());
         File dir = new File(client.getDirectory());
         File[] files = listDir(dir);
         if (files != null) {

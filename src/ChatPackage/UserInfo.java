@@ -16,6 +16,7 @@ public class UserInfo {
     public UserInfo(String username, String password, boolean logged) {
         this.username = username;
         this.password = password;
+        this.directory = ChatServer.chatDirectory + "\\jose";
         this.logged = logged;
     }
     

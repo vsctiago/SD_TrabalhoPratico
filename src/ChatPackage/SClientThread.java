@@ -39,7 +39,6 @@ public class SClientThread extends Thread {
             this.myInfo.setUsername("guest"+ChatServer.guestCount);
             //TODO: Isto não pode estar aqui. Server não acede a variaveis do lado do Client
             Client.userinfo = this.myInfo;
-            out.println("Client.userinfo = " + Client.userinfo.getUsername());
             out.println("# Welcome " + this.myInfo.getUsername() + ".");
             incGuestCount();
             
@@ -155,7 +154,8 @@ public class SClientThread extends Thread {
                 String guestName = this.myInfo.getUsername();
                 //TODO: inserir newUser nos connectedUsers!
                 this.myInfo = newUser;
-                Client.userinfo = this.myInfo;
+                Client.userinfo = newUser;
+                System.out.println(Client.userinfo.getUsername());
                 File newDir = new File(ChatServer.chatDirectory + '\\' + this.myInfo.getUsername());
                 newDir.mkdirs();
                 out.println("# [INTERNAL] Start multicast.");
