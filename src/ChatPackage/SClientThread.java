@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ChatPackage;
 
 import java.io.BufferedReader;
@@ -13,10 +8,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Iterator;
 
-/**
- *
- * @author Tiago Fernandes
- */
 public class SClientThread extends Thread {
 
     private Socket cs = null;
@@ -70,12 +61,12 @@ public class SClientThread extends Thread {
                     } else if(msg.startsWith("/log")) {
                         String[] regparams = msg.split("\\s+");
                         userLogin(regparams);
-                    } else if(msg.startsWith("/help")) {
+                    } else if(msg.equals("/help")) {
                         out.println("# Chat Commands: ");
                         for(String item : ChatServer.cmds) {
                             out.println(item);
                         }
-                    } else if(msg.startsWith("/users")) {
+                    } else if(msg.equals("/users")) {
                          if(this.myInfo.isLogged()) {
                              listAllUsers();
                          } else {

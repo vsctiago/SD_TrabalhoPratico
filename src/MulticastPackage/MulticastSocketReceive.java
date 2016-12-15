@@ -28,7 +28,7 @@ public class MulticastSocketReceive extends Thread {
                 ms.receive(recv);
                 ByteArrayInputStream b_in = new ByteArrayInputStream(recv.getData());
                 ObjectInputStream o_in = new ObjectInputStream(b_in);
-                fileList.add((FileList) o_in.readObject());
+                fileList.add((FileList) o_in.readObject()); //retirar os antigos filelist
                 recv.setLength(buf.length);
                 b_in.reset();
                 System.out.println(fileList.get(rear).getClientName());

@@ -10,11 +10,11 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class FileTransfer extends Thread {
+public class FileTransferTest extends Thread {
 
     Socket cs = null;
 
-    public FileTransfer(Socket cs) {
+    public FileTransferTest(Socket cs) {
         this.cs = cs;
     }
 
