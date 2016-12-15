@@ -9,7 +9,7 @@ package ChatPackage;
  *
  * @author Tiago Fernandes
  */
-class UserInfo {
+public class UserInfo {
     
     private String username;
     private String password;

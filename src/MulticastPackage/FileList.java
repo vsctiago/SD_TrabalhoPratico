@@ -23,8 +23,8 @@ public class FileList implements Serializable{
         return fileName;
     }
 
-    public void setFileName(String[] fileName) {
-        this.fileName = fileName;
+    public void setFileName(int pos, String fileName) {
+        this.fileName[pos] = fileName;
     }
     
 }
