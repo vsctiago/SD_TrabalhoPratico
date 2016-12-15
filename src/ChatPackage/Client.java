@@ -50,11 +50,11 @@ public class Client extends Thread {
             ms = new MulticastSocket(portaMulticast);
             ms.joinGroup(group);
 
-            Thread clientWrite = new Thread(new ClientWrite(cs));
-            Thread clientRead = new Thread(new ClientRead(cs));
+            Thread clientWrite = new ClientWrite(cs);
+            Thread clientRead = new ClientRead(cs);
 
-            Thread multicastSocketSend = new Thread(new MulticastSocketSend(group, ms, portaMulticast, file));
-            Thread multicastSocketReceive = new Thread(new MulticastSocketReceive(ms, fileList));
+            Thread multicastSocketSend = new MulticastSocketSend(group, ms, portaMulticast, file);
+            Thread multicastSocketReceive = new MulticastSocketReceive(ms, fileList);
 
             ((ClientRead)clientRead).setMulticastSocketSend(multicastSocketSend);
             
