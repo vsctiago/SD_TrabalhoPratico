@@ -1,5 +1,6 @@
 package ChatPackage;
 
+import MulticastPackage.FileList;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,25 +22,36 @@ public class ClientWrite extends Thread {
         try {
             out = new PrintWriter(cs.getOutputStream(), true);
             input = new BufferedReader(new InputStreamReader(System.in));
-            
+
             String msg;
             while (!Client.isClosed()) {
                 msg = input.readLine();
-                if(msg.startsWith("/reg") || msg.startsWith("/log")) {
+                if (msg.startsWith("/reg") || msg.startsWith("/log")) {
                     String[] regparams = msg.split("\\s+");
                     Client.tmpInfo.setUsername(regparams[1]);
                     Client.tmpInfo.setPassword(regparams[2]);
                     Client.tmpInfo.setDirectory(Client.chatDirectory + "\\" + Client.tmpInfo.getUsername());
+                } else if (msg.startsWith("/files")) {
+                    showAllFiles();
                 }
                 out.println(msg);
             }
-            
+
             out.close();
             input.close();
-            
+
         } catch (IOException e) {
             System.out.println(e);
         }
-        
+    }
+
+    public void showAllFiles() {
+        System.out.println("@ Files available in the group:");
+        System.out.println("@ Ex: Username - File name");
+        for (FileList f : Client.fileList) {
+            for (String fn : f.getFileNames()) {
+                System.out.println("@ " + f.getClientName() + " - " + fn);
+            }
+        }
     }
 }

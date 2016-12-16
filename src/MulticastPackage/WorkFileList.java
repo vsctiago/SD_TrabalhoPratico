@@ -21,9 +21,9 @@ public class WorkFileList extends Thread {
             ByteArrayInputStream b_in = new ByteArrayInputStream(recv.getData());
             ObjectInputStream o_in = new ObjectInputStream(b_in);
             FileList tempFileList = (FileList) o_in.readObject();
-            for (int i = 0; i < fileList.size(); i++) {
-                if (fileList.get(i).getClientName().equals(tempFileList.getClientName())) {
-                    fileList.remove(i);
+            for (FileList f : fileList) {
+                if (f.getClientName().equals(tempFileList.getClientName())) {
+                    fileList.remove(f);
                     fileList.add(tempFileList);
                     return;
                 }

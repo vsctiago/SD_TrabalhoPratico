@@ -150,7 +150,6 @@ public class SClientThread extends Thread {
                 out.println("# [Reg] Account created successfully!");
                 out.println("# [Reg] Logging in...");
                 String guestName = this.myInfo.getUsername();
-                //TODO: inserir newUser nos connectedUsers!
                 this.myInfo = newUser;
                 out.println("# [INTERNAL] Logged in.");
                 out.println("# Welcome " + this.myInfo.getUsername() + ".");

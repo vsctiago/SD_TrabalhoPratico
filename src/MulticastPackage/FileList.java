@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class FileList implements Serializable{
 
     private String clientName;
-    private ArrayList<String> fileName = new ArrayList<>();
+    private ArrayList<String> fileNames = new ArrayList<>();
 
     public String getClientName() {
         return clientName;
@@ -16,12 +16,12 @@ public class FileList implements Serializable{
         this.clientName = clientName;
     }
 
-    public ArrayList<String> getFileName() {
-        return fileName;
+    public ArrayList<String> getFileNames() {
+        return fileNames;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName.add(fileName);
+    public void addFileName(String fileName) {
+        this.fileNames.add(fileName);
     }
     
 }
