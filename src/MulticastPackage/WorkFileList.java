@@ -12,7 +12,7 @@ public class WorkFileList extends Thread {
     private DatagramPacket recv;
 
     public WorkFileList(DatagramPacket recv) {
-        this.fileList = Client.getFileList();
+        this.fileList = (ArrayList<FileList>) Client.getFileList().clone();
         this.recv = recv;
     }
 
@@ -22,7 +22,6 @@ public class WorkFileList extends Thread {
             ByteArrayInputStream b_in = new ByteArrayInputStream(recv.getData());
             ObjectInputStream o_in = new ObjectInputStream(b_in);
             FileList tempFileList = (FileList) o_in.readObject();
-            synchronized (fileList) {
                 for (FileList f : fileList) {
                     if (f.getClientName().equals(tempFileList.getClientName())) {
                         //System.out.println(Client.getUserinfo().getUsername() + "vou remover");
@@ -32,7 +31,6 @@ public class WorkFileList extends Thread {
                         //System.out.println(Client.getUserinfo().getUsername() + "adicionei");
                         return;
                     }
-                }
             }
             Client.addFileList(tempFileList);
             b_in.reset();
