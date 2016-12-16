@@ -40,9 +40,7 @@ public class MulticastSocketSend extends Thread {
 
                 try {
                     Thread.sleep(600000);
-                } catch (InterruptedException e) {
-                    System.out.println("Exception handled " + e);
-                }
+                } catch (InterruptedException e) { }
 
             }
         } catch (Exception e) {
