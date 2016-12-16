@@ -24,7 +24,7 @@ public class WorkFileList extends Thread {
             FileList tempFileList = (FileList) o_in.readObject();
             for (FileList f : fileList) {
                 if (f.getClientName().equals(tempFileList.getClientName())) {
-                    fileList.remove(f);
+                    Client.removeFileList(f);
                     Client.addFileList(tempFileList);
                     return;
                 }
