@@ -29,6 +29,7 @@ public class MulticastSocketSend extends Thread {
     public void run() {
         try {
             while (!close) {
+                this.fileClient = new FileList();
                 ByteArrayOutputStream byteArr = new ByteArrayOutputStream();
                 ObjectOutputStream objOut = new ObjectOutputStream(byteArr);
                 FilesList();
