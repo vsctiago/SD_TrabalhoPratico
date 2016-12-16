@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Iterator;
 
 public class ClientWrite extends Thread {
 
@@ -48,9 +49,13 @@ public class ClientWrite extends Thread {
     public void showAllFiles() {
         System.out.println("@ Files available in the group:");
         System.out.println("@ Ex: Username - File name");
-        for (FileList f : Client.fileList) {
-            for (String fn : f.getFileNames()) {
-                System.out.println("@ " + f.getClientName() + " - " + fn);
+        Iterator<FileList> it = Client.fileList.iterator();
+        while(it.hasNext()) {
+            FileList fl = it.next();
+            Iterator<String> it2 = fl.getFileNames().iterator();
+            while(it.hasNext()) {
+                String fn = it2.next();
+                System.out.println("@ " + fl.getClientName() + " - " + fn);
             }
         }
     }
