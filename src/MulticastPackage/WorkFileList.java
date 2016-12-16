@@ -22,11 +22,16 @@ public class WorkFileList extends Thread {
             ByteArrayInputStream b_in = new ByteArrayInputStream(recv.getData());
             ObjectInputStream o_in = new ObjectInputStream(b_in);
             FileList tempFileList = (FileList) o_in.readObject();
-            for (FileList f : fileList) {
-                if (f.getClientName().equals(tempFileList.getClientName())) {
-                    Client.removeFileList(f);
-                    Client.addFileList(tempFileList);
-                    return;
+            synchronized (fileList) {
+                for (FileList f : fileList) {
+                    if (f.getClientName().equals(tempFileList.getClientName())) {
+                        //System.out.println(Client.getUserinfo().getUsername() + "vou remover");
+                        Client.removeFileList(f);
+                        //System.out.println(Client.getUserinfo().getUsername() + "removi e vou adicionar");
+                        Client.addFileList(tempFileList);
+                        //System.out.println(Client.getUserinfo().getUsername() + "adicionei");
+                        return;
+                    }
                 }
             }
             Client.addFileList(tempFileList);
