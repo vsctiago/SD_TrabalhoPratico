@@ -31,8 +31,8 @@ public class MulticastSocketSend extends Thread {
             while (!close) {
                 ByteArrayOutputStream byteArr = new ByteArrayOutputStream();
                 ObjectOutputStream objOut = new ObjectOutputStream(byteArr);
-                objOut.writeObject(fileClient);
                 FilesList();
+                objOut.writeObject(fileClient);
                 byte[] buf = byteArr.toByteArray();
                 DatagramPacket fileList = new DatagramPacket(buf, buf.length, group, porta);
                 ms.send(fileList);

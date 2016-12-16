@@ -1,5 +1,6 @@
 package MulticastPackage;
 
+import ChatPackage.Client;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
@@ -10,8 +11,8 @@ public class WorkFileList extends Thread {
     private ArrayList<FileList> fileList;
     private DatagramPacket recv;
 
-    public WorkFileList(ArrayList<FileList> fileList, DatagramPacket recv) {
-        this.fileList = fileList;
+    public WorkFileList(DatagramPacket recv) {
+        this.fileList = Client.getFileList();
         this.recv = recv;
     }
 
@@ -24,14 +25,14 @@ public class WorkFileList extends Thread {
             for (FileList f : fileList) {
                 if (f.getClientName().equals(tempFileList.getClientName())) {
                     fileList.remove(f);
-                    fileList.add(tempFileList);
+                    Client.addFileList(tempFileList);
                     return;
                 }
             }
+            Client.addFileList(tempFileList);
             b_in.reset();
-            fileList.add(tempFileList);
         } catch (Exception e) {
-            System.out.println("Exception Multicast Receive -> " + e);
+            System.out.println("Exception Work File Receive -> " + e);
         }
     }
 }

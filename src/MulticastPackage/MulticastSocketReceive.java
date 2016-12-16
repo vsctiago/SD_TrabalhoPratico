@@ -9,12 +9,10 @@ import java.util.ArrayList;
 public class MulticastSocketReceive extends Thread {
 
     private final MulticastSocket ms;
-    static ArrayList<FileList> fileList;
     private Boolean close = false;
 
-    public MulticastSocketReceive(MulticastSocket ms, ArrayList<FileList> fileList) {
+    public MulticastSocketReceive(MulticastSocket ms) {
         this.ms = ms;
-        MulticastSocketReceive.fileList = fileList;
     }
 
     @Override
@@ -25,7 +23,7 @@ public class MulticastSocketReceive extends Thread {
                 byte[] buf = new byte[1000];
                 DatagramPacket recv = new DatagramPacket(buf, buf.length);
                 ms.receive(recv);
-                Thread workFileList = new WorkFileList(fileList, recv);
+                Thread workFileList = new WorkFileList(recv);
                 workFileList.start();
                 recv.setLength(buf.length);
             }

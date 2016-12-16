@@ -45,14 +45,14 @@ public class Client extends Thread {
             Thread clientRead = new ClientRead(cs);
 
             Thread multicastSocketSend = new MulticastSocketSend(group, ms, portaMulticast);
-            Thread multicastSocketReceive = new MulticastSocketReceive(ms, fileList);
+            Thread multicastSocketReceive = new MulticastSocketReceive(ms);
 
             ((ClientRead)clientRead).setMulticastSocketSend(multicastSocketSend);
             ((ClientRead)clientRead).setMulticastSocketReceive(multicastSocketReceive);
             
             clientWrite.start();
             clientRead.start();
-            //multicastSocketSend.interrupt();
+            
             try {
                 clientWrite.join();
                 clientRead.join();
@@ -80,6 +80,11 @@ public class Client extends Thread {
         return userinfo;
     }
 
+    public static ArrayList<FileList> getFileList(){
+        return Client.fileList;
+    }
     
-    
+    public synchronized static void addFileList(FileList newFileList){
+        Client.fileList.add(newFileList);
+    }
 }
