@@ -56,7 +56,6 @@ public class Client extends Thread {
             try {
                 clientWrite.join();
                 clientRead.join();
-                
             } catch (InterruptedException e) {
                 System.out.println(e);
             }
@@ -82,6 +81,10 @@ public class Client extends Thread {
 
     public static ArrayList<FileList> getFileList(){
         return Client.fileList;
+    }
+    
+    public synchronized static void removeFileList(FileList toRemove){
+        Client.fileList.remove(toRemove);
     }
     
     public synchronized static void addFileList(FileList newFileList){
