@@ -53,7 +53,7 @@ public class ClientWrite extends Thread {
         while(it.hasNext()) {
             FileList fl = it.next();
             Iterator<String> it2 = fl.getFileNames().iterator();
-            while(it.hasNext()) {
+            while(it2.hasNext()) {
                 String fn = it2.next();
                 System.out.println("@ " + fl.getClientName() + " - " + fn);
             }
