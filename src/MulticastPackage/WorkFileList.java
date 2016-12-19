@@ -1,6 +1,6 @@
 package MulticastPackage;
 
-import ChatPackage.Client;
+import ChatClientPackage.Client;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
@@ -8,11 +8,11 @@ import java.util.ArrayList;
 
 public class WorkFileList extends Thread {
 
-    private ArrayList<FileList> fileList;
+    private ArrayList<ListFileClient> fileList;
     private DatagramPacket recv;
 
     public WorkFileList(DatagramPacket recv) {
-        this.fileList = (ArrayList<FileList>) Client.getFileList().clone();
+        this.fileList = (ArrayList<ListFileClient>) Client.getFileList().clone();
         this.recv = recv;
     }
 
@@ -21,8 +21,8 @@ public class WorkFileList extends Thread {
         try {
             ByteArrayInputStream b_in = new ByteArrayInputStream(recv.getData());
             ObjectInputStream o_in = new ObjectInputStream(b_in);
-            FileList tempFileList = (FileList) o_in.readObject();
-                for (FileList f : fileList) {
+            ListFileClient tempFileList = (ListFileClient) o_in.readObject();
+                for (ListFileClient f : fileList) {
                     if (f.getClientName().equals(tempFileList.getClientName())) {
                         //System.out.println(Client.getUserinfo().getUsername() + "vou remover");
                         Client.removeFileList(f);

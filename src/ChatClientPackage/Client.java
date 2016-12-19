@@ -1,7 +1,8 @@
-package ChatPackage;
+package ChatClientPackage;
 
+import StructPackage.UserInfo;
 import MulticastPackage.MulticastSocketSend;
-import MulticastPackage.FileList;
+import MulticastPackage.ListFileClient;
 import MulticastPackage.MulticastSocketReceive;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -18,7 +19,7 @@ public class Client extends Thread {
     static int portaChatServe = 4444;
     
     static MulticastSocket ms;
-    static ArrayList<FileList> fileList = new ArrayList<>();
+    static ArrayList<ListFileClient> listFiles = new ArrayList<>();
     
     static String ipMulticast = "230.1.1.2";
     static int portaMulticast = 6789;
@@ -79,15 +80,15 @@ public class Client extends Thread {
         return userinfo;
     }
 
-    public static ArrayList<FileList> getFileList(){
-        return Client.fileList;
+    public static ArrayList<ListFileClient> getFileList(){
+        return Client.listFiles;
     }
     
-    public synchronized static void removeFileList(FileList toRemove){
-        Client.fileList.remove(toRemove);
+    public synchronized static void removeFileList(ListFileClient toRemove){
+        Client.listFiles.remove(toRemove);
     }
     
-    public synchronized static void addFileList(FileList newFileList){
-        Client.fileList.add(newFileList);
+    public synchronized static void addFileList(ListFileClient newFileList){
+        Client.listFiles.add(newFileList);
     }
 }

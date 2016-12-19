@@ -1,6 +1,6 @@
 package FileTransferPackage;
 
-import ChatPackage.Client;
+import ChatClientPackage.Client;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

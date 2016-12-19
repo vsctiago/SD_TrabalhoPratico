@@ -3,10 +3,10 @@ package MulticastPackage;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class FileList implements Serializable{
+public class ListFileClient implements Serializable{
 
     private String clientName;
-    private ArrayList<String> fileNames = new ArrayList<>();
+    private ArrayList<String> listFileNames = new ArrayList<>();
 
     public String getClientName() {
         return clientName;
@@ -16,12 +16,12 @@ public class FileList implements Serializable{
         this.clientName = clientName;
     }
 
-    public ArrayList<String> getFileNames() {
-        return fileNames;
+    public ArrayList<String> getListFileNames() {
+        return listFileNames;
     }
 
     public void addFileName(String fileName) {
-        this.fileNames.add(fileName);
+        this.listFileNames.add(fileName);
     }
     
 }

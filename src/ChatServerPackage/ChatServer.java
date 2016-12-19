@@ -1,5 +1,6 @@
-package ChatPackage;
+package ChatServerPackage;
 
+import StructPackage.UserInfo;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

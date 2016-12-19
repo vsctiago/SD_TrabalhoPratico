@@ -1,6 +1,6 @@
-package ChatPackage;
+package ChatClientPackage;
 
-import MulticastPackage.FileList;
+import MulticastPackage.ListFileClient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -49,10 +49,10 @@ public class ClientWrite extends Thread {
     public void showAllFiles() {
         System.out.println("@ Files available in the group:");
         System.out.println("@ Ex: Username - File name");
-        Iterator<FileList> it = Client.fileList.iterator();
+        Iterator<ListFileClient> it = Client.listFiles.iterator();
         while(it.hasNext()) {
-            FileList fl = it.next();
-            Iterator<String> it2 = fl.getFileNames().iterator();
+            ListFileClient fl = it.next();
+            Iterator<String> it2 = fl.getListFileNames().iterator();
             while(it2.hasNext()) {
                 String fn = it2.next();
                 System.out.println("@ " + fl.getClientName() + " - " + fn);
