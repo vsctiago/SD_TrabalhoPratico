@@ -145,7 +145,7 @@ public class SClientThread extends Thread {
     }
 
     //User signup.
-    private synchronized void userRegister(String[] params) {
+    synchronized static void userRegister(String[] params) { //Tive de tirar o private e meter static
         if (params.length != 4) {
             out.println("# [Reg] Wrong format used!");
             out.println("# [Reg] Ex: /reg username password password");
@@ -179,7 +179,7 @@ public class SClientThread extends Thread {
     }
 
     //User login.
-    private void userLogin(String[] params) {
+    static void userLogin(String[] params) { //Tirei o private
         if (params.length != 3) {
             out.println("# [Log] Wrong format used!");
             out.println("# [Log] Ex: /log username password");
