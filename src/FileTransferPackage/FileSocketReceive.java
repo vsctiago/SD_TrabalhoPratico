@@ -11,13 +11,11 @@ import java.net.Socket;
 
 public class FileSocketReceive extends Thread {
 
-    private final int port = 6789;
     private String ficheiro, fileToReceive;
-    private int portToSend;
+    private int portToSend = 0;
 
-    public FileSocketReceive(String fileToReceive, int portToSend) {
+    public FileSocketReceive(String fileToReceive) {
         this.fileToReceive = fileToReceive;
-        this.portToSend = portToSend;
     }
 
     @Override
@@ -29,6 +27,8 @@ public class FileSocketReceive extends Thread {
         } catch (IOException ex) {
             System.out.println("Can't setup server on this port number. ");
         }
+
+        portToSend = serverSocket.getLocalPort();
 
         Socket socket = null;
         InputStream in = null;
@@ -45,7 +45,7 @@ public class FileSocketReceive extends Thread {
         } catch (IOException ex) {
             System.out.println("Can't get socket input stream. ");
         }
-        
+
         try {
             out = new FileOutputStream(Client.getUserinfo().getDirectory() + fileToReceive);
         } catch (FileNotFoundException ex) {
@@ -57,6 +57,11 @@ public class FileSocketReceive extends Thread {
         int count;
         try {
             while ((count = in.read(bytes)) > 0) {
+                String txt = new String(bytes, 0, count);
+                if (txt.equals("NO LONG EXIST")) {
+                    System.out.println(txt);
+                    break;
+                }
                 out.write(bytes, 0, count);
             }
 
@@ -67,5 +72,9 @@ public class FileSocketReceive extends Thread {
         } catch (IOException ex) {
             System.out.println("FileSocketReceive -> " + ex);
         }
+    }
+
+    public int getPort() {
+        return this.portToSend;
     }
 }

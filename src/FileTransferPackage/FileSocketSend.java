@@ -1,6 +1,7 @@
 package FileTransferPackage;
 
 import ChatClientPackage.Client;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,18 +29,21 @@ public class FileSocketSend extends Thread {
         try {
             socket = new Socket(host, portToSend);
 
-            File file = new File(Client.getUserinfo().getDirectory() + fileToSend);
-            long length = file.length();
-            byte[] bytes = new byte[1024];
             InputStream in = null;
-
-            in = new FileInputStream(file);
-
             OutputStream out = null;
+            byte[] bytes = new byte[1024];
+            
+            File file = new File(Client.getUserinfo().getDirectory() + fileToSend);
+            if (!file.exists()) {
+                in = new ByteArrayInputStream("NO LONG EXIST".getBytes());
+            }   else{
+                long length = file.length();
+                in = new FileInputStream(file);
+            }
+            
             out = socket.getOutputStream();
 
             int count;
-
             while ((count = in.read(bytes)) > 0) {
                 out.write(bytes, 0, count);
             }
