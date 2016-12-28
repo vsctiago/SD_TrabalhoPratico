@@ -1,6 +1,8 @@
 package ChatServerPackage;
 
-public class ServerProtocol {/*
+import StructPackage.UserInfo;
+/*
+public class ServerProtocol {
 
     private String[] msg = {"/help", "/quit", "/logout",
         "/reg", "/log",
@@ -63,5 +65,22 @@ public class ServerProtocol {/*
         }
 
         return theOutput;
-    }*/
 }
+    synchronized void userRegister(String[] params) {
+        if (params.length != 4) {
+            out.println("# [Reg] Wrong format used!");
+            out.println("# [Reg] Ex: /reg username password password");
+        } else if (validateRegister(params)) {
+            UserInfo newUser = new UserInfo(params[1], params[2], true, ChatServer.chatDirectory);
+            ChatServer.userDB.add(newUser);
+            out.println("# [Reg] Account created successfully!");
+            out.println("# [Reg] Logging in...");
+            String guestName = this.myInfo.getUsername();
+            this.myInfo = newUser;
+            out.println("# [INTERNAL] Logged in.");
+            out.println("# Welcome " + this.myInfo.getUsername() + ".");
+            msgGuestSignedUp(guestName);
+        }
+    }
+
+*/

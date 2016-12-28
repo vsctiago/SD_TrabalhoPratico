@@ -211,5 +211,4 @@ public class SClientThread extends Thread {
         out.println("# [Log] That username doesn't exist!");
         return null;
     }
-
 }
