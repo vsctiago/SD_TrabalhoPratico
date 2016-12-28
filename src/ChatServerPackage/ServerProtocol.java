@@ -1,6 +1,6 @@
 package ChatServerPackage;
 
-public class ServerProtocol {
+public class ServerProtocol {/*
 
     private String[] msg = {"/help", "/quit", "/logout",
         "/reg", "/log",
@@ -63,5 +63,5 @@ public class ServerProtocol {
         }
 
         return theOutput;
-    }
+    }*/
 }

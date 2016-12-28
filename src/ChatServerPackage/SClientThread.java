@@ -145,12 +145,12 @@ public class SClientThread extends Thread {
     }
 
     //User signup.
-    synchronized static void userRegister(String[] params) { //Tive de tirar o private e meter static
+    synchronized void userRegister(String[] params) {
         if (params.length != 4) {
             out.println("# [Reg] Wrong format used!");
             out.println("# [Reg] Ex: /reg username password password");
         } else if (validateRegister(params)) {
-            UserInfo newUser = new UserInfo(params[1], params[2], true);
+            UserInfo newUser = new UserInfo(params[1], params[2], true, ChatServer.chatDirectory);
             ChatServer.userDB.add(newUser);
             out.println("# [Reg] Account created successfully!");
             out.println("# [Reg] Logging in...");
@@ -179,7 +179,7 @@ public class SClientThread extends Thread {
     }
 
     //User login.
-    static void userLogin(String[] params) { //Tirei o private
+    void userLogin(String[] params) { //Tirei o private
         if (params.length != 3) {
             out.println("# [Log] Wrong format used!");
             out.println("# [Log] Ex: /log username password");

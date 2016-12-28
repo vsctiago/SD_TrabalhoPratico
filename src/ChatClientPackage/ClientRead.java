@@ -36,7 +36,7 @@ public class ClientRead extends Thread {
                 } else if(msg.equals("# [INTERNAL] Logged in.")) {
                     Client.userinfo = Client.tmpInfo;
                     Client.userinfo.setLogged(true);
-                    File dir = new File(ChatServer.chatDirectory + '\\' + Client.userinfo.getUsername()); //Problema aqui
+                    File dir = new File(Client.chatDirectory + '\\' + Client.userinfo.getUsername()); //Problema aqui
                     if(!dir.exists()) {
                         System.out.println(" [Log] Creating files folder.");
                         dir.mkdirs();

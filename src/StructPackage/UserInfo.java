@@ -13,10 +13,10 @@ public class UserInfo {
         this.username = username;
     }
     
-    public UserInfo(String username, String password, boolean logged) {
+    public UserInfo(String username, String password, boolean logged, String directory) {
         this.username = username;
         this.password = password;
-        this.directory = ChatServer.chatDirectory + "\\jose"; //Problema aqui
+        this.directory = directory + "\\jose"; //Problema aqui
         this.logged = logged;
     }
     
