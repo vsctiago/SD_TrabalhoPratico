@@ -34,10 +34,11 @@ public class ClientWrite extends Thread {
                     Client.tmpInfo.setDirectory(Client.chatDirectory + "\\" + Client.tmpInfo.getUsername());
                 } else if (msg.startsWith("/files")) {
                     showAllFiles();
+                } else if (msg.equals("/quit")) {
+                    Client.closeInput();
                 }
                 out.println(msg);
             }
-
             out.close();
             input.close();
 

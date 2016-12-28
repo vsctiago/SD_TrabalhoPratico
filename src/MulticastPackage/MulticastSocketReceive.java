@@ -24,9 +24,9 @@ public class MulticastSocketReceive extends Thread {
                 workFileList.start();
                 recv.setLength(buf.length);
             }
-        } catch (Exception e) {
-            System.out.println("Exception Multicast Receive -> " + e);
-        }
+        } catch (Exception e) { }
+        
+        ms.close();
     }
 
     public void setClose() {

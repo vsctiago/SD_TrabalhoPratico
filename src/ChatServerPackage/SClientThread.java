@@ -51,7 +51,8 @@ public class SClientThread extends Thread {
             while (listening) {
                 msg = in.readLine().trim();
                 if (msg != null) {
-                    if (msg.startsWith("/quit") || msg.startsWith("/logout")) {
+                    if (msg.equals("/quit") || msg.equals("/logout")) {
+                        out.println(msg);
                         break;
                     } else if (msg.startsWith("/reg")) {
                         String[] regparams = msg.split("\\s+");

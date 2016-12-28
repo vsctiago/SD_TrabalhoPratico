@@ -1,5 +1,6 @@
 package ChatClientPackage;
 
+import FileTransferPackage.FileSocketSend;
 import MulticastPackage.MulticastSocketReceive;
 import MulticastPackage.MulticastSocketSend;
 import java.io.BufferedReader;
@@ -27,9 +28,9 @@ public class ClientRead extends Thread {
             String msg;
             while ((msg = in.readLine()) != null) {
                 if (msg.startsWith("/quit") || msg.equals("/logout")) {
+                    ((MulticastSocketSend)multicastSocketSend).interrupt();
                     ((MulticastSocketSend)multicastSocketSend).setClose();
                     ((MulticastSocketReceive)multicastSocketReceive).setClose();
-                    System.out.println(msg);
                     break;
                 } else if(msg.equals("/fupdate") && Client.userinfo.isLogged()) {
                     multicastSocketSend.interrupt();
@@ -43,12 +44,13 @@ public class ClientRead extends Thread {
                     }
                     startMulticastSocketSend();
                     startMulticastSocketReceive();
+                } else if(msg.startsWith("/sendfile")) {
+                    FileSocketSend send = new FileSocketSend(msg, NORM_PRIORITY);
                 } else {
                     System.out.println(msg);
-                }
+                } 
             }
             in.close();
-            Client.closeInput();
             
         } catch (IOException e) {
             System.out.println(e);

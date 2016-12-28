@@ -45,9 +45,9 @@ public class MulticastSocketSend extends Thread {
                 } catch (InterruptedException e) { }
 
             }
-        } catch (Exception e) {
-            System.out.println("Exception Multicast Send -> " + e);
-        }
+        } catch (Exception e) { }
+        
+        ms.close();
     }
 
     public File[] listDir(File dir) {
