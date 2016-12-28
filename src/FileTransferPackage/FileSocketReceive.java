@@ -16,7 +16,7 @@ public class FileSocketReceive extends Thread {
 
     public FileSocketReceive(String fileToReceive) {
         this.fileToReceive = fileToReceive;
-        this.portToSend = 3781;
+        this.portToSend = 0;
     }
 
     @Override
