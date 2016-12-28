@@ -1,5 +1,6 @@
 package ChatClientPackage;
 
+import FileTransferPackage.FileSocketReceive;
 import MulticastPackage.ListFileClient;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,17 +28,21 @@ public class ClientWrite extends Thread {
             String msg;
             while (!Client.isClosed()) {
                 msg = input.readLine();
-                if (msg.startsWith("/reg") || msg.startsWith("/log")) {
-                    String[] regparams = msg.split("\\s+");
-                    Client.tmpInfo.setUsername(regparams[1]);
-                    Client.tmpInfo.setPassword(regparams[2]);
-                    Client.tmpInfo.setDirectory(Client.chatDirectory + "\\" + Client.tmpInfo.getUsername());
-                } else if (msg.startsWith("/files")) {
-                    showAllFiles();
-                } else if (msg.equals("/quit")) {
-                    Client.closeInput();
+                if (msg.startsWith("/dl")) {
+                    startReceiver(msg);
+                } else {
+                    if (msg.startsWith("/reg") || msg.startsWith("/log")) {
+                        String[] regparams = msg.split("\\s+");
+                        Client.tmpInfo.setUsername(regparams[1]);
+                        Client.tmpInfo.setPassword(regparams[2]);
+                        Client.tmpInfo.setDirectory(Client.chatDirectory + "\\" + Client.tmpInfo.getUsername());
+                    } else if (msg.startsWith("/files")) {
+                        showAllFiles();
+                    } else if (msg.equals("/quit")) {
+                        Client.closeInput();
+                    }
+                    out.println(msg);
                 }
-                out.println(msg);
             }
             out.close();
             input.close();
@@ -51,13 +56,29 @@ public class ClientWrite extends Thread {
         System.out.println("@ Files available in the group:");
         System.out.println("@ Ex: Username - File name");
         Iterator<ListFileClient> it = Client.listFiles.iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             ListFileClient fl = it.next();
             Iterator<String> it2 = fl.getListFileNames().iterator();
-            while(it2.hasNext()) {
+            while (it2.hasNext()) {
                 String fn = it2.next();
                 System.out.println("@ " + fl.getClientName() + " - " + fn);
             }
+        }
+    }
+
+    private void startReceiver(String msg) {
+        String[] recparams = msg.split("\\s+");
+        if (recparams.length == 3) {
+            Thread receive = new FileSocketReceive(recparams[2]);
+            int port = 0;
+            do {
+                port = ((FileSocketReceive) receive).getPort();
+                System.out.println("Port: " + port);
+            } while (port == 0);
+            String newMsg = msg + " " + port;
+            out.println(newMsg);
+        } else {
+            System.out.println("@ Invalid params in command dl!");
         }
     }
 }

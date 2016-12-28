@@ -19,7 +19,7 @@ public class SClientThread extends Thread {
     private boolean listening = true;
 
     private String msg;
-    private UserInfo myInfo = new UserInfo();
+    private UserInfo userInfo = new UserInfo();
 
     public SClientThread(Socket cs, SClientThread[] threads) {
         this.cs = cs;
@@ -37,14 +37,14 @@ public class SClientThread extends Thread {
             out = new PrintWriter(cs.getOutputStream(), true);
 
             //Assigning Guest name and incrementing Guest count.
-            this.myInfo.setUsername("guest" + ChatServer.guestCount);
-            out.println("# Welcome " + this.myInfo.getUsername() + ".");
+            this.userInfo.setUsername("guest" + ChatServer.guestCount);
+            out.println("# Welcome " + this.userInfo.getUsername() + ".");
             incGuestCount();
 
             //Notifying all users in chat that someone arrived!
             for (int i = 0; i < maxClientsCount; i++) {
                 if (threads[i] != null && threads[i] != this) {
-                    threads[i].out.println("# " + this.myInfo.getUsername() + " joined chat!");
+                    threads[i].out.println("# " + this.userInfo.getUsername() + " joined chat!");
                 }
             }
 
@@ -66,15 +66,15 @@ public class SClientThread extends Thread {
                             out.println(item);
                         }
                     } else if (msg.equals("/users")) {
-                        if (this.myInfo.isLogged()) {
+                        if (this.userInfo.isLogged()) {
                             listAllUsers();
                         } else {
                             out.println("# Guests don't have access to this command.");
                         }
                     } else if (msg.equals("/fupdate")) {
-                        if (this.myInfo.isLogged()) {
+                        if (this.userInfo.isLogged()) {
                             for (int i = 0; i < maxClientsCount; i++) {
-                                if (threads[i] != null && threads[i].myInfo.isLogged()) {
+                                if (threads[i] != null && threads[i].userInfo.isLogged()) {
                                     threads[i].out.println(msg);
                                 }
                             }
@@ -82,21 +82,29 @@ public class SClientThread extends Thread {
                             out.println("# Guests don't have access to this command.");
                         }
                     } else if (msg.startsWith("/files")) {
-                        if (this.myInfo.isLogged()) {
+                        if (this.userInfo.isLogged()) {
                             //TODO: listar ficheiros de um utilizador
                         } else {
                             out.println("# Guests don't have access to this command.");
                         }
                     } else if (msg.startsWith("/myfiles")) {
-                        if (this.myInfo.isLogged()) {
+                        if (this.userInfo.isLogged()) {
                             //TODO: listar os meus ficheiros
                         } else {
                             out.println("# Guests don't have access to this command.");
                         }
+                    } else if (msg.startsWith("/dl")) {
+                        String[] params = msg.split("\\s+");
+                        for (SClientThread t : threads) {
+                            if (t.userInfo.getUsername().equals(params[1])) {
+                                t.out.println(msg);
+                                break;
+                            }
+                        }
                     } else {
                         for (int i = 0; i < maxClientsCount; i++) {
                             if (threads[i] != null && threads[i] != this) {
-                                threads[i].out.println("<" + this.myInfo.getUsername() + ">: " + msg);
+                                threads[i].out.println("<" + this.userInfo.getUsername() + ">: " + msg);
                             }
                         }
                     }
@@ -123,7 +131,7 @@ public class SClientThread extends Thread {
         out.println("Users list:");
         for (SClientThread t : threads) {
             if (t != null && t != this) {
-                out.println(t.myInfo.getUsername());
+                out.println(t.userInfo.getUsername());
             }
         }
     }
@@ -132,7 +140,7 @@ public class SClientThread extends Thread {
     private void msgGuestSignedUp(String guestName) {
         for (int i = 0; i < this.maxClientCount; i++) {
             if (threads[i] != null && threads[i] != this) {
-                threads[i].out.println("# " + guestName + " is now " + this.myInfo.getUsername() + " !");
+                threads[i].out.println("# " + guestName + " is now " + this.userInfo.getUsername() + " !");
             }
         }
     }
@@ -155,10 +163,10 @@ public class SClientThread extends Thread {
             ChatServer.userDB.add(newUser);
             out.println("# [Reg] Account created successfully!");
             out.println("# [Reg] Logging in...");
-            String guestName = this.myInfo.getUsername();
-            this.myInfo = newUser;
+            String guestName = this.userInfo.getUsername();
+            this.userInfo = newUser;
             out.println("# [INTERNAL] Logged in.");
-            out.println("# Welcome " + this.myInfo.getUsername() + ".");
+            out.println("# Welcome " + this.userInfo.getUsername() + ".");
             msgGuestSignedUp(guestName);
         }
     }
@@ -187,10 +195,10 @@ public class SClientThread extends Thread {
         } else {
             UserInfo tmp;
             if ((tmp = validateLogin(params)) != null) {
-                this.myInfo = tmp;
+                this.userInfo = tmp;
                 out.println("# [Log] Logging in...");
                 out.println("# [INTERNAL] Logged in.");
-                out.println("# Welcome " + this.myInfo.getUsername() + ".");
+                out.println("# Welcome " + this.userInfo.getUsername() + ".");
             }
         }
     }

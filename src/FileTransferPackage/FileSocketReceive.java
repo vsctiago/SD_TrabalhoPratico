@@ -12,10 +12,11 @@ import java.net.Socket;
 public class FileSocketReceive extends Thread {
 
     private String ficheiro, fileToReceive;
-    private int portToSend = 0;
+    private int portToSend;
 
     public FileSocketReceive(String fileToReceive) {
         this.fileToReceive = fileToReceive;
+        this.portToSend = 3781;
     }
 
     @Override

@@ -33,9 +33,9 @@ public class FileSocketSend extends Thread {
             OutputStream out = null;
             byte[] bytes = new byte[1024];
             
-            File file = new File(Client.getUserinfo().getDirectory() + fileToSend);
+            File file = new File(Client.getUserinfo().getDirectory() + "\\" + fileToSend);
             if (!file.exists()) {
-                in = new ByteArrayInputStream("NO LONG EXIST".getBytes());
+                in = new ByteArrayInputStream("FILE NO LONGER EXISTS".getBytes());
             }   else{
                 long length = file.length();
                 in = new FileInputStream(file);

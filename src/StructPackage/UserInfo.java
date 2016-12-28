@@ -16,7 +16,7 @@ public class UserInfo {
     public UserInfo(String username, String password, boolean logged, String directory) {
         this.username = username;
         this.password = password;
-        this.directory = directory + "\\jose"; //Problema aqui
+        this.directory = directory + "\\jose";
         this.logged = logged;
     }
     
