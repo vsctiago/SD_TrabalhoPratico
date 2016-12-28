@@ -47,6 +47,7 @@ public class ClientRead extends Thread {
                 } else if(msg.startsWith("/dl")) {
                     String[] params = msg.split("\\s+");
                     Thread send = new FileSocketSend(params[2], Integer.parseInt(params[3]));
+                    send.start();
                 } else {
                     System.out.println(msg);
                 } 

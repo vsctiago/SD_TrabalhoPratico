@@ -47,21 +47,25 @@ public class FileSocketReceive extends Thread {
             System.out.println("Can't get socket input stream. ");
         }
 
-        try {
-            out = new FileOutputStream(Client.getUserinfo().getDirectory() + fileToReceive);
-        } catch (FileNotFoundException ex) {
-            System.out.println("File not found. ");
-        }
-
         byte[] bytes = new byte[1024];
 
         int count;
+        boolean exists = false;
         try {
             while ((count = in.read(bytes)) > 0) {
                 String txt = new String(bytes, 0, count);
-                if (txt.equals("NO LONG EXIST")) {
+                if (txt.equals("FILE NO LONGER EXISTS")) {
                     System.out.println(txt);
                     break;
+                } else {
+                    if (!exists) {
+                        try {
+                            out = new FileOutputStream(Client.getUserinfo().getDirectory() + "\\" + fileToReceive);
+                        } catch (FileNotFoundException ex) {
+                            System.out.println("File not found. ");
+                        }
+                        exists = true;
+                    }
                 }
                 out.write(bytes, 0, count);
             }

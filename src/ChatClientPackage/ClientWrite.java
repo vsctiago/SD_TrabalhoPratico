@@ -70,6 +70,7 @@ public class ClientWrite extends Thread {
         String[] recparams = msg.split("\\s+");
         if (recparams.length == 3) {
             Thread receive = new FileSocketReceive(recparams[2]);
+            receive.start();
             int port = 0;
             do {
                 port = ((FileSocketReceive) receive).getPort();
