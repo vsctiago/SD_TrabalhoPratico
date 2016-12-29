@@ -94,12 +94,16 @@ public class SClientThread extends Thread {
                             out.println("# Guests don't have access to this command.");
                         }
                     } else if (msg.startsWith("/dl")) {
-                        String[] params = msg.split("\\s+");
-                        for (SClientThread t : threads) {
-                            if (t.userInfo.getUsername().equals(params[1])) {
-                                t.out.println(msg);
-                                break;
+                        if (this.userInfo.isLogged()) {
+                            String[] params = msg.split("\\s+");
+                            for (SClientThread t : threads) {
+                                if (t.userInfo.getUsername().equals(params[1])) {
+                                    t.out.println(msg);
+                                    break;
+                                }
                             }
+                        } else {
+                            out.println("# Guests don't have access to this command.");
                         }
                     } else {
                         for (int i = 0; i < maxClientsCount; i++) {
@@ -128,10 +132,10 @@ public class SClientThread extends Thread {
 
     //List all connected users.
     private void listAllUsers() {
-        out.println("Users list:");
+        out.println("# Users list:");
         for (SClientThread t : threads) {
             if (t != null && t != this) {
-                out.println(t.userInfo.getUsername());
+                out.println("# " + t.userInfo.getUsername());
             }
         }
     }
@@ -140,7 +144,16 @@ public class SClientThread extends Thread {
     private void msgGuestSignedUp(String guestName) {
         for (int i = 0; i < this.maxClientCount; i++) {
             if (threads[i] != null && threads[i] != this) {
-                threads[i].out.println("# " + guestName + " is now " + this.userInfo.getUsername() + " !");
+                threads[i].out.println("# " + guestName + " is now " + this.userInfo.getUsername() + "!");
+            }
+        }
+    }
+
+    //Informs users that a guest is now registered.
+    private void msgGuestSignedIn(String guestName) {
+        for (int i = 0; i < this.maxClientCount; i++) {
+            if (threads[i] != null && threads[i] != this) {
+                threads[i].out.println("# " + guestName + " logged in as " + this.userInfo.getUsername() + "!");
             }
         }
     }
@@ -154,13 +167,14 @@ public class SClientThread extends Thread {
     }
 
     //User signup.
-    synchronized void userRegister(String[] params) {
+    synchronized void userRegister(String[] params) throws IOException {
         if (params.length != 4) {
             out.println("# [Reg] Wrong format used!");
             out.println("# [Reg] Ex: /reg username password password");
         } else if (validateRegister(params)) {
             UserInfo newUser = new UserInfo(params[1], params[2], true, ChatServer.chatDirectory);
             ChatServer.userDB.add(newUser);
+            ChatServer.saveToFile();
             out.println("# [Reg] Account created successfully!");
             out.println("# [Reg] Logging in...");
             String guestName = this.userInfo.getUsername();
@@ -193,12 +207,25 @@ public class SClientThread extends Thread {
             out.println("# [Log] Wrong format used!");
             out.println("# [Log] Ex: /log username password");
         } else {
-            UserInfo tmp;
-            if ((tmp = validateLogin(params)) != null) {
-                this.userInfo = tmp;
-                out.println("# [Log] Logging in...");
-                out.println("# [INTERNAL] Logged in.");
-                out.println("# Welcome " + this.userInfo.getUsername() + ".");
+            //Verify if user is logged in
+            boolean found = false;
+            for (SClientThread t : threads) {
+                if (t != null && t.userInfo.getUsername().equals(params[1])) {
+                    out.println("# [Log] User already logged in.");
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                UserInfo tmp;
+                if ((tmp = validateLogin(params)) != null) {
+                    String guestName = this.userInfo.getUsername();
+                    this.userInfo = tmp;
+                    out.println("# [Log] Logging in...");
+                    out.println("# [INTERNAL] Logged in.");
+                    out.println("# Welcome " + this.userInfo.getUsername() + ".");
+                    msgGuestSignedIn(guestName);
+                }
             }
         }
     }
@@ -220,4 +247,5 @@ public class SClientThread extends Thread {
         out.println("# [Log] That username doesn't exist!");
         return null;
     }
+
 }

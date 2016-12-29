@@ -1,6 +1,8 @@
 package StructPackage;
 
-public class UserInfo {
+import java.io.Serializable;
+
+public class UserInfo implements Serializable {
     
     private String username;
     private String password;

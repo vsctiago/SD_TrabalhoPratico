@@ -28,15 +28,17 @@ public class ClientWrite extends Thread {
             String msg;
             while (!Client.isClosed()) {
                 msg = input.readLine();
-                if (msg.startsWith("/dl")) {
+                if (msg.startsWith("/dl") && Client.userinfo.isLogged()) {
                     startReceiver(msg);
                 } else {
                     if (msg.startsWith("/reg") || msg.startsWith("/log")) {
                         String[] regparams = msg.split("\\s+");
-                        Client.tmpInfo.setUsername(regparams[1]);
-                        Client.tmpInfo.setPassword(regparams[2]);
-                        Client.tmpInfo.setDirectory(Client.chatDirectory + "\\" + Client.tmpInfo.getUsername());
-                    } else if (msg.startsWith("/files")) {
+                        if(regparams.length == 3 || regparams.length == 4) {
+                            Client.tmpInfo.setUsername(regparams[1]);
+                            Client.tmpInfo.setPassword(regparams[2]);
+                            Client.tmpInfo.setDirectory(Client.chatDirectory + "\\" + Client.tmpInfo.getUsername());
+                        }
+                    } else if (msg.startsWith("/files") && Client.userinfo.isLogged()) {
                         showAllFiles();
                     } else if (msg.equals("/quit")) {
                         Client.closeInput();
