@@ -91,4 +91,8 @@ public class Client extends Thread {
     public synchronized static void addFileList(ListFileClient newFileList){
         Client.listFiles.add(newFileList);
     }
+    
+    public static void clearList() {
+        Client.listFiles.clear();
+    }
 }

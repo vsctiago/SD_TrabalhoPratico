@@ -81,7 +81,7 @@ public class ChatServer {
     
     
     private static void loadFile() throws IOException, ClassNotFoundException {
-        System.out.println("Loading userDB");
+        System.out.println("Loading userDB!");
         try {
         FileInputStream fis = new FileInputStream(chatDirectory + "\\" + USERDB_FILENAME);
         ObjectInputStream in = new ObjectInputStream(fis);
@@ -89,11 +89,10 @@ public class ChatServer {
         in.close();
         fis.close();
         } catch(FileNotFoundException e) {
-            System.out.println("Creating userDB file");
+            System.out.println("Creating userDB file!");
                 File f = new File(chatDirectory + "\\" + USERDB_FILENAME);
                 f.createNewFile();
         }
-        System.out.println(userDB.toString());
     }
     
 }

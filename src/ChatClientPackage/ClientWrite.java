@@ -31,17 +31,17 @@ public class ClientWrite extends Thread {
                 if (msg.startsWith("/dl") && Client.userinfo.isLogged()) {
                     startReceiver(msg);
                 } else {
-                    if (msg.startsWith("/reg") || msg.startsWith("/log")) {
+                    if (msg.startsWith("/files") && Client.userinfo.isLogged()) {
+                        showAllFiles();
+                    } else if (msg.equals("/quit") || msg.equals("/logout")) {
+                        Client.closeInput();
+                    } else if (msg.startsWith("/reg") || msg.startsWith("/log")) {
                         String[] regparams = msg.split("\\s+");
                         if(regparams.length == 3 || regparams.length == 4) {
                             Client.tmpInfo.setUsername(regparams[1]);
                             Client.tmpInfo.setPassword(regparams[2]);
                             Client.tmpInfo.setDirectory(Client.chatDirectory + "\\" + Client.tmpInfo.getUsername());
                         }
-                    } else if (msg.startsWith("/files") && Client.userinfo.isLogged()) {
-                        showAllFiles();
-                    } else if (msg.equals("/quit")) {
-                        Client.closeInput();
                     }
                     out.println(msg);
                 }
@@ -76,7 +76,6 @@ public class ClientWrite extends Thread {
             int port = 0;
             do {
                 port = ((FileSocketReceive) receive).getPort();
-                System.out.println("Port: " + port);
             } while (port == 0);
             String newMsg = msg + " " + port;
             out.println(newMsg);

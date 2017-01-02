@@ -38,7 +38,7 @@ public class MulticastSocketSend extends Thread {
                 byte[] buf = byteArr.toByteArray();
                 DatagramPacket fileList = new DatagramPacket(buf, buf.length, group, porta);
                 ms.send(fileList);
-                System.out.println("Package is sent!");
+                System.out.println("@ Files list updated!");
 
                 try {
                     Thread.sleep(600000);

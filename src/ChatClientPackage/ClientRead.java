@@ -27,12 +27,13 @@ public class ClientRead extends Thread {
             
             String msg;
             while ((msg = in.readLine()) != null) {
-                if (msg.startsWith("/quit") || msg.equals("/logout")) {
-                    ((MulticastSocketSend)multicastSocketSend).interrupt();
+                if (msg.equals("/quit") || msg.equals("/logout")) {
                     ((MulticastSocketSend)multicastSocketSend).setClose();
+                    ((MulticastSocketSend)multicastSocketSend).interrupt();
                     ((MulticastSocketReceive)multicastSocketReceive).setClose();
                     break;
                 } else if(msg.equals("/fupdate") && Client.userinfo.isLogged()) {
+                    Client.clearList();
                     multicastSocketSend.interrupt();
                 } else if(msg.equals("# [INTERNAL] Logged in.")) {
                     Client.userinfo = Client.tmpInfo;

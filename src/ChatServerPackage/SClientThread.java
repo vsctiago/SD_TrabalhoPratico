@@ -36,10 +36,7 @@ public class SClientThread extends Thread {
             in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
             out = new PrintWriter(cs.getOutputStream(), true);
 
-            //Assigning Guest name and incrementing Guest count.
-            this.userInfo.setUsername("guest" + ChatServer.guestCount);
-            out.println("# Welcome " + this.userInfo.getUsername() + ".");
-            incGuestCount();
+            guestJoin();
 
             //Notifying all users in chat that someone arrived!
             for (int i = 0; i < maxClientsCount; i++) {
@@ -51,61 +48,77 @@ public class SClientThread extends Thread {
             while (listening) {
                 msg = in.readLine().trim();
                 if (msg != null) {
-                    if (msg.equals("/quit") || msg.equals("/logout")) {
-                        out.println(msg);
-                        break;
-                    } else if (msg.startsWith("/reg")) {
-                        String[] regparams = msg.split("\\s+");
-                        userRegister(regparams);
-                    } else if (msg.startsWith("/log")) {
-                        String[] regparams = msg.split("\\s+");
-                        userLogin(regparams);
-                    } else if (msg.equals("/help")) {
-                        out.println("# Chat Commands: ");
-                        for (String item : ChatServer.cmds) {
-                            out.println(item);
-                        }
-                    } else if (msg.equals("/users")) {
-                        if (this.userInfo.isLogged()) {
-                            listAllUsers();
-                        } else {
-                            out.println("# Guests don't have access to this command.");
-                        }
-                    } else if (msg.equals("/fupdate")) {
-                        if (this.userInfo.isLogged()) {
-                            for (int i = 0; i < maxClientsCount; i++) {
-                                if (threads[i] != null && threads[i].userInfo.isLogged()) {
-                                    threads[i].out.println(msg);
+                    if (msg.startsWith("/")) {
+                        if (msg.equals("/quit") || msg.equals("/logout")) {
+                            msgUserLeft();
+                            for(SClientThread t : threads) {
+                                if(t != null && t.userInfo.isLogged() && t != this) {
+                                    t.out.println("/fupdate");
                                 }
                             }
-                        } else {
-                            out.println("# Guests don't have access to this command.");
-                        }
-                    } else if (msg.startsWith("/files")) {
-                        if (this.userInfo.isLogged()) {
-                            //TODO: listar ficheiros de um utilizador
-                        } else {
-                            out.println("# Guests don't have access to this command.");
-                        }
-                    } else if (msg.startsWith("/myfiles")) {
-                        if (this.userInfo.isLogged()) {
-                            //TODO: listar os meus ficheiros
-                        } else {
-                            out.println("# Guests don't have access to this command.");
-                        }
-                    } else if (msg.startsWith("/dl")) {
-                        if (this.userInfo.isLogged()) {
-                            String[] params = msg.split("\\s+");
-                            for (SClientThread t : threads) {
-                                if (t.userInfo.getUsername().equals(params[1])) {
-                                    t.out.println(msg);
-                                    break;
+                            out.println(msg);
+                            break;
+                        } else if (msg.startsWith("/reg")) {
+                            String[] regparams = msg.split("\\s+");
+                            userRegister(regparams);
+                        } else if (msg.startsWith("/log")) {
+                            String[] regparams = msg.split("\\s+");
+                            userLogin(regparams);
+                        } else if (msg.equals("/help")) {
+                            out.println("# Chat Commands: ");
+                            for (String item : ChatServer.cmds) {
+                                out.println(item);
+                            }
+                        } else if (msg.equals("/users")) {
+                            if (this.userInfo.isLogged()) {
+                                listAllUsers();
+                            } else {
+                                out.println("# Guests don't have access to this command.");
+                            }
+                        } else if (msg.equals("/fupdate")) {
+                            if (this.userInfo.isLogged()) {
+                                for (int i = 0; i < maxClientsCount; i++) {
+                                    if (threads[i] != null && threads[i].userInfo.isLogged()) {
+                                        threads[i].out.println(msg);
+                                    }
                                 }
+                            } else {
+                                out.println("# Guests don't have access to this command.");
+                            }
+                        } else if (msg.equals("/files")) {
+                            if (this.userInfo.isLogged()) {
+                                //TODO: listar ficheiros de um utilizador
+                            } else {
+                                out.println("# Guests don't have access to this command.");
+                            }
+                        } else if (msg.equals("/myfiles")) {
+                            if (this.userInfo.isLogged()) {
+                                //TODO: listar os meus ficheiros
+                            } else {
+                                out.println("# Guests don't have access to this command.");
+                            }
+                        } else if (msg.startsWith("/dl")) {
+                            if (this.userInfo.isLogged()) {
+                                String[] params = msg.split("\\s+");
+                                boolean found = false;
+                                for (SClientThread t : threads) {
+                                    if (t != null) {
+                                        if (t.userInfo.getUsername().equals(params[1]) && t.userInfo.isLogged()) {
+                                            found = true;
+                                            t.out.println(msg);
+                                            break;
+                                        }
+                                    }
+                                }
+                                if(!found)
+                                    out.println("# There's no such user.");
+                            } else {
+                                out.println("# Guests don't have access to this command.");
                             }
                         } else {
-                            out.println("# Guests don't have access to this command.");
+                            out.println("# CMD Unknown!");
                         }
-                    } else {
+                    } else {// If not CMD
                         for (int i = 0; i < maxClientsCount; i++) {
                             if (threads[i] != null && threads[i] != this) {
                                 threads[i].out.println("<" + this.userInfo.getUsername() + ">: " + msg);
@@ -148,6 +161,14 @@ public class SClientThread extends Thread {
             }
         }
     }
+    
+    private void msgUserLeft() {
+        for (int i = 0; i < this.maxClientCount; i++) {
+            if (threads[i] != null && threads[i] != this) {
+                threads[i].out.println("# " + this.userInfo.getUsername() + " left!");
+            }
+        }
+    }
 
     //Informs users that a guest is now registered.
     private void msgGuestSignedIn(String guestName) {
@@ -159,7 +180,10 @@ public class SClientThread extends Thread {
     }
 
     //Increments Guest count.
-    private synchronized void incGuestCount() {
+    private synchronized void guestJoin() {
+        //Assigning Guest name and incrementing Guest count.
+        this.userInfo.setUsername("guest" + ChatServer.guestCount);
+        out.println("# Welcome " + this.userInfo.getUsername() + ".");
         ChatServer.guestCount++;
         if (ChatServer.guestCount == Integer.MAX_VALUE) {
             ChatServer.guestCount = 1;

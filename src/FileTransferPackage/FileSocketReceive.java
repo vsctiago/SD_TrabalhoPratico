@@ -54,8 +54,8 @@ public class FileSocketReceive extends Thread {
         try {
             while ((count = in.read(bytes)) > 0) {
                 String txt = new String(bytes, 0, count);
-                if (txt.equals("FILE NO LONGER EXISTS")) {
-                    System.out.println(txt);
+                if (txt.equals("FILENOTFOUND")) {
+                    System.out.println("@ File not found.");
                     break;
                 } else {
                     if (!exists) {
@@ -70,8 +70,10 @@ public class FileSocketReceive extends Thread {
                 out.write(bytes, 0, count);
             }
 
-            out.close();
-            in.close();
+            if(out != null)
+                out.close();
+            if(in != null)
+                in.close();
             socket.close();
             serverSocket.close();
         } catch (IOException ex) {
