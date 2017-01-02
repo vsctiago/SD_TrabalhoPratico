@@ -25,17 +25,16 @@ public class ChatServer {
     static final String USERDB_FILENAME = "userDB.txt";
     static String chatDirectory = "C:\\ChatApp";
     static String[] cmds = new String[]{
-        "CMD: /reg \t\t-> Signup user.",
-        "CMD: /log \t\t-> Login user.",
+        "CMD: /reg [username] [password] [password]\t\t-> Signup user.",
+        "CMD: /log [username] [password]\t\t-> Login user.",
         "CMD: /users \t\t-> List all users connected.",
         "CMD: /files \t\t-> List all files from users connected.",
-        "CMD: /myfiles \t\t-> List all my files.",
-        "CMD: /dl \t\t-> Download one or more files from one user.",
+        "CMD: /dl [username] [file]\t\t-> Download one or more files from one user.",
         "CMD: /quit or /logout \t-> Logout and leaves chat."};
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         
-        String appPath = new File("").getAbsolutePath();
+        chatDirectory = new File("").getAbsolutePath();
         
         loadFile();
         

@@ -4,6 +4,7 @@ import StructPackage.UserInfo;
 import MulticastPackage.MulticastSocketSend;
 import MulticastPackage.ListFileClient;
 import MulticastPackage.MulticastSocketReceive;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -30,6 +31,10 @@ public class Client extends Thread {
     static UserInfo tmpInfo = new UserInfo();
     
     public static void main(String[] args) throws IOException {
+        
+        chatDirectory = new File("").getAbsolutePath();
+        chatDirectory = chatDirectory + "\\ChatShare";
+        
         try {
             cs = new Socket(ipChatServe, portaChatServe);
         } catch (IOException e) {
