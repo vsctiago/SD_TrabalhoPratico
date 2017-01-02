@@ -48,33 +48,34 @@ public class FileSocketReceive extends Thread {
         }
 
         byte[] bytes = new byte[1024];
-        System.out.println(portToSend + "," + fileToReceive);
+
         int count;
         boolean exists = false;
+        boolean read = false;
         try {
             while ((count = in.read(bytes)) > 0) {
+                read = true;
                 String txt = new String(bytes, 0, count);
                 if (txt.equals("FILENOTFOUND")) {
                     System.out.println("@ File not found.");
                     break;
-                } else {
-                    if (!exists) {
-                        try {
-                            out = new FileOutputStream(Client.getUserinfo().getDirectory() + "\\" + fileToReceive);
-                        } catch (FileNotFoundException ex) {
-                            System.out.println("File not found. ");
-                        }
-                        exists = true;
+                } else if (!exists) {
+                    try {
+                        out = new FileOutputStream(Client.getUserinfo().getDirectory() + "\\" + fileToReceive);
+                    } catch (FileNotFoundException ex) {
+                        System.out.println("File not found. ");
                     }
+                    exists = true;
                 }
                 out.write(bytes, 0, count);
             }
+            if (!read) {
+                out = new FileOutputStream(Client.getUserinfo().getDirectory() + "\\" + fileToReceive);
+            }
             System.out.println("File <" + fileToReceive + "> downloaded!");
-            
-            if(out != null)
-                out.close();
-            if(in != null)
-                in.close();
+
+            out.close();
+            in.close();
             socket.close();
             serverSocket.close();
         } catch (IOException ex) {
