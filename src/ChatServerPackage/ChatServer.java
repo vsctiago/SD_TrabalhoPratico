@@ -1,17 +1,12 @@
 package ChatServerPackage;
 
 import StructPackage.UserInfo;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -88,7 +83,7 @@ public class ChatServer {
         userDB = (ArrayList<UserInfo>)in.readObject();
         in.close();
         fis.close();
-        } catch(FileNotFoundException e) {
+        } catch(Exception e) {
             System.out.println("Creating userDB file!");
                 File f = new File(chatDirectory + "\\" + USERDB_FILENAME);
                 f.createNewFile();

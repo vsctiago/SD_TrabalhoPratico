@@ -2,7 +2,6 @@ package ChatServerPackage;
 
 import StructPackage.UserInfo;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -50,20 +49,28 @@ public class SClientThread extends Thread {
                 if (msg != null) {
                     if (msg.startsWith("/")) {
                         if (msg.equals("/quit") || msg.equals("/logout")) {
+                            out.println(msg);
                             msgUserLeft();
-                            for(SClientThread t : threads) {
-                                if(t != null && t.userInfo.isLogged() && t != this) {
+                            for (SClientThread t : threads) {
+                                if (t != null && t.userInfo.isLogged() && t != this) {
                                     t.out.println("/fupdate");
                                 }
                             }
-                            out.println(msg);
                             break;
                         } else if (msg.startsWith("/reg")) {
-                            String[] regparams = msg.split("\\s+");
-                            userRegister(regparams);
+                            if (!this.userInfo.isLogged()) {
+                                String[] regparams = msg.split("\\s+");
+                                userRegister(regparams);
+                            } else {
+                                out.println("# You are already logged in.");
+                            }
                         } else if (msg.startsWith("/log")) {
-                            String[] regparams = msg.split("\\s+");
-                            userLogin(regparams);
+                            if (!this.userInfo.isLogged()) {
+                                String[] regparams = msg.split("\\s+");
+                                userLogin(regparams);
+                            } else {
+                                out.println("# You are already logged in.");
+                            }
                         } else if (msg.equals("/help")) {
                             out.println("# Chat Commands: ");
                             for (String item : ChatServer.cmds) {
@@ -104,19 +111,25 @@ public class SClientThread extends Thread {
                                 for (SClientThread t : threads) {
                                     if (t != null) {
                                         if (t.userInfo.getUsername().equals(params[1]) && t.userInfo.isLogged()) {
+                                            if(params[1].equals(this.userInfo.getUsername())) {
+                                                out.println("# Can't download from yourself!");
+                                                break;
+                                            }
                                             found = true;
+                                            out.println("# [INTERNAL] START RECEIVER");
                                             t.out.println(msg);
                                             break;
                                         }
                                     }
                                 }
-                                if(!found)
+                                if (!found) {
                                     out.println("# There's no such user.");
+                                }
                             } else {
                                 out.println("# Guests don't have access to this command.");
                             }
                         } else {
-                            out.println("# CMD Unknown!");
+                            out.println("# CMD Unknown! Use /help.");
                         }
                     } else {// If not CMD
                         for (int i = 0; i < maxClientsCount; i++) {
@@ -161,7 +174,7 @@ public class SClientThread extends Thread {
             }
         }
     }
-    
+
     private void msgUserLeft() {
         for (int i = 0; i < this.maxClientCount; i++) {
             if (threads[i] != null && threads[i] != this) {
@@ -191,21 +204,31 @@ public class SClientThread extends Thread {
     }
 
     //User signup.
-    synchronized void userRegister(String[] params) throws IOException {
+    private synchronized void userRegister(String[] params) throws IOException {
         if (params.length != 4) {
             out.println("# [Reg] Wrong format used!");
             out.println("# [Reg] Ex: /reg username password password");
         } else if (validateRegister(params)) {
-            UserInfo newUser = new UserInfo(params[1], params[2], true, ChatServer.chatDirectory);
-            ChatServer.userDB.add(newUser);
-            ChatServer.saveToFile();
-            out.println("# [Reg] Account created successfully!");
-            out.println("# [Reg] Logging in...");
-            String guestName = this.userInfo.getUsername();
-            this.userInfo = newUser;
-            out.println("# [INTERNAL] Logged in.");
-            out.println("# Welcome " + this.userInfo.getUsername() + ".");
-            msgGuestSignedUp(guestName);
+            boolean found = false;
+            for (UserInfo u : ChatServer.userDB) {
+                if (u.getUsername().equals(params[1])) {
+                    found = true;
+                    out.println("# Username already exists.");
+                    return;
+                }
+            }
+            if (!found) {
+                UserInfo newUser = new UserInfo(params[1], params[2], true, ChatServer.chatDirectory);
+                ChatServer.userDB.add(newUser);
+                ChatServer.saveToFile();
+                out.println("# [Reg] Account created successfully!");
+                out.println("# [Reg] Logging in...");
+                String guestName = this.userInfo.getUsername();
+                this.userInfo = newUser;
+                out.println("# [INTERNAL] Logged in.");
+                out.println("# Welcome " + this.userInfo.getUsername() + ".");
+                msgGuestSignedUp(guestName);
+            }
         }
     }
 
@@ -226,7 +249,7 @@ public class SClientThread extends Thread {
     }
 
     //User login.
-    void userLogin(String[] params) { //Tirei o private
+    private void userLogin(String[] params) {
         if (params.length != 3) {
             out.println("# [Log] Wrong format used!");
             out.println("# [Log] Ex: /log username password");

@@ -49,9 +49,11 @@ public class ClientRead extends Thread {
                     String[] params = msg.split("\\s+");
                     Thread send = new FileSocketSend(params[2], Integer.parseInt(params[3]));
                     send.start();
+                } else if(msg.equals("# [INTERNAL] START RECEIVER")) {
+
                 } else {
                     System.out.println(msg);
-                } 
+                }
             }
             in.close();
             

@@ -9,7 +9,6 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MulticastSocketSend extends Thread {
 
