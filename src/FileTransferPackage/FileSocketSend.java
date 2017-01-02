@@ -33,7 +33,6 @@ public class FileSocketSend extends Thread {
             OutputStream out = null;
             byte[] bytes = new byte[1024];
             
-            System.out.println(host + "," + portToSend + ","+ fileToSend);
             File file = new File(Client.getUserinfo().getDirectory() + "\\" + fileToSend);
             if (!file.exists()) {
                 in = new ByteArrayInputStream("FILENOTFOUND".getBytes());

@@ -47,9 +47,6 @@ public class ClientRead extends Thread {
                     startMulticastSocketReceive();
                 } else if(msg.startsWith("/dl")) {
                     String[] params = msg.split("\\s+", 4);
-                    for(String p : params) {
-                        System.out.println("######" + p);
-                    }
                     Thread send = new FileSocketSend(params[3], Integer.parseInt(params[2]));
                     send.start();
                 } else {

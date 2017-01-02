@@ -83,7 +83,6 @@ public class ClientWrite extends Thread {
                 port = ((FileSocketReceive) receive).getPort();
             } while (port == 0);
             String newMsg = recparams[0] + " " + recparams[1] + " " + port + " " + recparams[2];
-            System.out.println(newMsg);
             out.println(newMsg);
         } else {
             System.out.println("@ Invalid params in command dl!");
