@@ -29,7 +29,12 @@ public class ClientWrite extends Thread {
             while (!Client.isClosed()) {
                 msg = input.readLine();
                 if (msg.startsWith("/dl") && Client.userinfo.isLogged()) {
-                    startReceiver(msg);
+                    String[] params = msg.split("\\s+");
+                    if (params[1].equals(Client.userinfo.getUsername())) {
+                        System.out.println("@ Can't download from yourself!");
+                    } else {
+                        startReceiver(msg);
+                    }
                 } else {
                     if (msg.startsWith("/files") && Client.userinfo.isLogged()) {
                         showAllFiles();
@@ -37,7 +42,7 @@ public class ClientWrite extends Thread {
                         Client.closeInput();
                     } else if (msg.startsWith("/reg") || msg.startsWith("/log")) {
                         String[] regparams = msg.split("\\s+");
-                        if(regparams.length == 3 || regparams.length == 4) {
+                        if (regparams.length == 3 || regparams.length == 4) {
                             Client.tmpInfo.setUsername(regparams[1]);
                             Client.tmpInfo.setPassword(regparams[2]);
                             Client.tmpInfo.setDirectory(Client.chatDirectory + "\\" + Client.tmpInfo.getUsername());
@@ -69,7 +74,7 @@ public class ClientWrite extends Thread {
     }
 
     private void startReceiver(String msg) {
-        String[] recparams = msg.split("\\s+");
+        String[] recparams = msg.split("\\s+", 3);
         if (recparams.length == 3) {
             Thread receive = new FileSocketReceive(recparams[2]);
             receive.start();
@@ -77,7 +82,8 @@ public class ClientWrite extends Thread {
             do {
                 port = ((FileSocketReceive) receive).getPort();
             } while (port == 0);
-            String newMsg = msg + " " + port;
+            String newMsg = recparams[0] + " " + recparams[1] + " " + port + " " + recparams[2];
+            System.out.println(newMsg);
             out.println(newMsg);
         } else {
             System.out.println("@ Invalid params in command dl!");

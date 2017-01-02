@@ -111,12 +111,7 @@ public class SClientThread extends Thread {
                                 for (SClientThread t : threads) {
                                     if (t != null) {
                                         if (t.userInfo.getUsername().equals(params[1]) && t.userInfo.isLogged()) {
-                                            if(params[1].equals(this.userInfo.getUsername())) {
-                                                out.println("# Can't download from yourself!");
-                                                break;
-                                            }
                                             found = true;
-                                            out.println("# [INTERNAL] START RECEIVER");
                                             t.out.println(msg);
                                             break;
                                         }

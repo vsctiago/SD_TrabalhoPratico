@@ -46,14 +46,15 @@ public class ClientRead extends Thread {
                     startMulticastSocketSend();
                     startMulticastSocketReceive();
                 } else if(msg.startsWith("/dl")) {
-                    String[] params = msg.split("\\s+");
-                    Thread send = new FileSocketSend(params[2], Integer.parseInt(params[3]));
+                    String[] params = msg.split("\\s+", 4);
+                    for(String p : params) {
+                        System.out.println("######" + p);
+                    }
+                    Thread send = new FileSocketSend(params[3], Integer.parseInt(params[2]));
                     send.start();
-                } else if(msg.equals("# [INTERNAL] START RECEIVER")) {
-
                 } else {
                     System.out.println(msg);
-                }
+                } 
             }
             in.close();
             

@@ -11,7 +11,7 @@ import java.net.Socket;
 
 public class FileSocketReceive extends Thread {
 
-    private String ficheiro, fileToReceive;
+    private String fileToReceive;
     private int portToSend;
 
     public FileSocketReceive(String fileToReceive) {
@@ -48,7 +48,7 @@ public class FileSocketReceive extends Thread {
         }
 
         byte[] bytes = new byte[1024];
-
+        System.out.println(portToSend + "," + fileToReceive);
         int count;
         boolean exists = false;
         try {
@@ -69,7 +69,8 @@ public class FileSocketReceive extends Thread {
                 }
                 out.write(bytes, 0, count);
             }
-
+            System.out.println("File <" + fileToReceive + "> downloaded!");
+            
             if(out != null)
                 out.close();
             if(in != null)
