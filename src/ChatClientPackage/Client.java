@@ -16,8 +16,8 @@ public class Client extends Thread {
     static Socket cs = null;
     static InetAddress group;
     
-    static String ipChatServe = "localhost";
-    static int portaChatServe = 4444;
+    static String ipChatServer = "localhost";
+    static int portaChatServer = 4444;
     
     static MulticastSocket ms;
     static ArrayList<ListFileClient> listFiles = new ArrayList<>();
@@ -36,7 +36,7 @@ public class Client extends Thread {
         chatDirectory = chatDirectory + "\\ChatShare";
         
         try {
-            cs = new Socket(ipChatServe, portaChatServe);
+            cs = new Socket(ipChatServer, portaChatServer);
         } catch (IOException e) {
             System.out.println(e);
         }

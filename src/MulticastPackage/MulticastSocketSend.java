@@ -38,11 +38,9 @@ public class MulticastSocketSend extends Thread {
                 DatagramPacket fileList = new DatagramPacket(buf, buf.length, group, porta);
                 ms.send(fileList);
                 System.out.println("@ Files list updated!");
-
                 try {
                     Thread.sleep(600000);
                 } catch (InterruptedException e) { }
-
             }
         } catch (Exception e) { }
         
