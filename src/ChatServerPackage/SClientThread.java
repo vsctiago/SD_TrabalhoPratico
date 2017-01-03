@@ -15,7 +15,7 @@ public class SClientThread extends Thread {
     private BufferedReader in = null;
     private PrintWriter out = null;
     private final SClientThread[] threads;
-    private final int maxClientCount;
+    private final int maxClientsCount;
     private boolean listening = true;
 
     private String msg;
@@ -24,13 +24,11 @@ public class SClientThread extends Thread {
     public SClientThread(Socket cs, SClientThread[] threads) {
         this.cs = cs;
         this.threads = threads;
-        this.maxClientCount = threads.length;
+        this.maxClientsCount = threads.length;
     }
 
     @Override
     public void run() {
-        int maxClientsCount = this.maxClientCount;
-        SClientThread[] threads = this.threads;
 
         try {
             in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
@@ -39,9 +37,9 @@ public class SClientThread extends Thread {
             guestJoin();
 
             //Notifying all users in chat that someone arrived!
-            for (int i = 0; i < maxClientsCount; i++) {
-                if (threads[i] != null && threads[i] != this) {
-                    threads[i].out.println("# " + this.userInfo.getUsername() + " joined chat!");
+            for (int i = 0; i < this.maxClientsCount; i++) {
+                if (this.threads[i] != null && this.threads[i] != this) {
+                    this.threads[i].out.println("# " + this.userInfo.getUsername() + " joined chat!");
                 }
             }
 
@@ -52,7 +50,7 @@ public class SClientThread extends Thread {
                         if (msg.equals("/quit") || msg.equals("/logout")) {
                             out.println(msg);
                             msgUserLeft();
-                            for (SClientThread t : threads) {
+                            for (SClientThread t : this.threads) {
                                 if (t != null && t.userInfo.isLogged() && t != this) {
                                     t.out.println("/fupdate");
                                 }
@@ -85,9 +83,9 @@ public class SClientThread extends Thread {
                             }
                         } else if (msg.equals("/fupdate")) {
                             if (this.userInfo.isLogged()) {
-                                for (int i = 0; i < maxClientsCount; i++) {
-                                    if (threads[i] != null && threads[i].userInfo.isLogged()) {
-                                        threads[i].out.println(msg);
+                                for (int i = 0; i < this.maxClientsCount; i++) {
+                                    if (this.threads[i] != null && this.threads[i].userInfo.isLogged()) {
+                                        this.threads[i].out.println(msg);
                                     }
                                 }
                             } else {
@@ -109,7 +107,7 @@ public class SClientThread extends Thread {
                             if (this.userInfo.isLogged()) {
                                 String[] params = msg.split("\\s+");
                                 boolean found = false;
-                                for (SClientThread t : threads) {
+                                for (SClientThread t : this.threads) {
                                     if (t != null) {
                                         if (t.userInfo.getUsername().equals(params[1]) && t.userInfo.isLogged()) {
                                             found = true;
@@ -172,18 +170,18 @@ public class SClientThread extends Thread {
                             out.println("# CMD Unknown! Use /help.");
                         }
                     } else {// If not CMD
-                        for (int i = 0; i < maxClientsCount; i++) {
-                            if (threads[i] != null && threads[i] != this) {
-                                threads[i].out.println("<" + this.userInfo.getUsername() + ">: " + msg);
+                        for (int i = 0; i < this.maxClientsCount; i++) {
+                            if (this.threads[i] != null && this.threads[i] != this) {
+                                this.threads[i].out.println("<" + this.userInfo.getUsername() + ">: " + msg);
                             }
                         }
                     }
                 }
             }
-            //Clear position in threads to free space for another connection.
-            for (int i = 0; i < maxClientsCount; i++) {
-                if (threads[i] == this) {
-                    threads[i] = null;
+            //Clear position in this.threads to free space for another connection.
+            for (int i = 0; i < this.maxClientsCount; i++) {
+                if (this.threads[i] == this) {
+                    this.threads[i] = null;
                 }
             }
 
@@ -199,7 +197,7 @@ public class SClientThread extends Thread {
     //List all connected users.
     private void listAllUsers() {
         out.println("# Users list:");
-        for (SClientThread t : threads) {
+        for (SClientThread t : this.threads) {
             if (t != null && t != this) {
                 out.println("# " + t.userInfo.getUsername());
             }
@@ -208,26 +206,26 @@ public class SClientThread extends Thread {
 
     //Informs users that a guest is now registered.
     private void msgGuestSignedUp(String guestName) {
-        for (int i = 0; i < this.maxClientCount; i++) {
-            if (threads[i] != null && threads[i] != this) {
-                threads[i].out.println("# " + guestName + " is now " + this.userInfo.getUsername() + "!");
+        for (int i = 0; i < this.maxClientsCount; i++) {
+            if (this.threads[i] != null && this.threads[i] != this) {
+                this.threads[i].out.println("# " + guestName + " is now " + this.userInfo.getUsername() + "!");
             }
         }
     }
 
     private void msgUserLeft() {
-        for (int i = 0; i < this.maxClientCount; i++) {
-            if (threads[i] != null && threads[i] != this) {
-                threads[i].out.println("# " + this.userInfo.getUsername() + " left!");
+        for (int i = 0; i < this.maxClientsCount; i++) {
+            if (this.threads[i] != null && this.threads[i] != this) {
+                this.threads[i].out.println("# " + this.userInfo.getUsername() + " left!");
             }
         }
     }
 
     //Informs users that a guest is now registered.
     private void msgGuestSignedIn(String guestName) {
-        for (int i = 0; i < this.maxClientCount; i++) {
-            if (threads[i] != null && threads[i] != this) {
-                threads[i].out.println("# " + guestName + " logged in as " + this.userInfo.getUsername() + "!");
+        for (int i = 0; i < this.maxClientsCount; i++) {
+            if (this.threads[i] != null && this.threads[i] != this) {
+                this.threads[i].out.println("# " + guestName + " logged in as " + this.userInfo.getUsername() + "!");
             }
         }
     }
@@ -296,7 +294,7 @@ public class SClientThread extends Thread {
         } else {
             //Verify if user is logged in
             boolean found = false;
-            for (SClientThread t : threads) {
+            for (SClientThread t : this.threads) {
                 if (t != null && t.userInfo.getUsername().equals(params[1])) {
                     out.println("# [Log] User already logged in.");
                     found = true;
@@ -382,7 +380,7 @@ public class SClientThread extends Thread {
             if (g.getName().equals(groupName)) {
                 found = true;
                 for (String client : g.getClients()) {
-                    for (SClientThread t : threads) {
+                    for (SClientThread t : this.threads) {
                         if (t != null && t != this && t.userInfo.getUsername().equals(client)) {
                             t.out.println("<" + groupName + "|" + this.userInfo.getUsername() + ">: " + msg);
                         }

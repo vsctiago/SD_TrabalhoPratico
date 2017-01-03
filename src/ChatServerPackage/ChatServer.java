@@ -31,7 +31,11 @@ public class ChatServer {
         "CMD: /log [username] [password]\t\t-> Login user.",
         "CMD: /users \t\t-> List all users connected.",
         "CMD: /files \t\t-> List all files from users connected.",
-        "CMD: /dl [username] [file]\t\t-> Download one or more files from one user.",
+        "CMD: /dl [username] [file]\t\t-> Download one file from one user.",
+        "CMD: /gjoin [groupname] \t\t-> Join a group.",
+        "CMD: /gleave [groupname] \t\t-> Leave a group.",
+        "CMD: /gmsg [groupname] [msg]\t\t-> Send a mensage to all members of one group.",
+        "CMD: /gusers [groupname] \t\t-> See all members of one group.",
         "CMD: /quit or /logout \t-> Logout and leaves chat."};
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
