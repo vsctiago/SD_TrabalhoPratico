@@ -1,5 +1,6 @@
 package ChatServerPackage;
 
+import StructPackage.Group;
 import StructPackage.UserInfo;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +25,7 @@ public class ChatServer {
     static int guestCount = 1;
     static final String USERDB_FILENAME = "userDB.txt";
     static String chatDirectory = "C:\\ChatApp";
+    static ArrayList<Group> groups = new ArrayList<>();
     static String[] cmds = new String[]{
         "CMD: /reg [username] [password] [password]\t\t-> Signup user.",
         "CMD: /log [username] [password]\t\t-> Login user.",
@@ -89,4 +91,13 @@ public class ChatServer {
         }
     }
     
+    static synchronized void createGroup(String groupName, String clientName) {
+        ChatServer.groups.add(new Group(groupName, clientName));
+        System.out.println("Created group " + groupName + ".");
+    }
+    
+    static synchronized void deleteGroup(Group toDelete) {
+        ChatServer.groups.remove(toDelete);
+        System.out.println("Deleted group " + toDelete.getName() + ".");
+    }
 }

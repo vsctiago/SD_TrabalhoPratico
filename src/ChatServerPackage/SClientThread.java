@@ -1,5 +1,6 @@
 package ChatServerPackage;
 
+import StructPackage.Group;
 import StructPackage.UserInfo;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -119,6 +120,50 @@ public class SClientThread extends Thread {
                                 }
                                 if (!found) {
                                     out.println("# There's no such user.");
+                                }
+                            } else {
+                                out.println("# Guests don't have access to this command.");
+                            }
+                        } else if (msg.startsWith("/gjoin")) {
+                            if (this.userInfo.isLogged()) {
+                                String[] params = msg.split("\\s+");
+                                if (params.length == 2) {
+                                    joinGroup(params[1]);
+                                } else {
+                                    out.println("# Invalid: Use /gjoin <groupname>.");
+                                }
+                            } else {
+                                out.println("# Guests don't have access to this command.");
+                            }
+                        } else if (msg.startsWith("/gleave")) {
+                            if (this.userInfo.isLogged()) {
+                                String[] params = msg.split("\\s+");
+                                if (params.length == 2) {
+                                    leaveGroup(params[1]);
+                                } else {
+                                    out.println("# Invalid: Use /gleave <groupname>.");
+                                }
+                            } else {
+                                out.println("# Guests don't have access to this command.");
+                            }
+                        } else if (msg.startsWith("/gmsg")) {
+                            if (this.userInfo.isLogged()) {
+                                String[] params = msg.split("\\s+", 3);
+                                if (params.length == 3 && params[0].equals("/gmsg")) {
+                                    sendMsgToGroup(params[1], params[2]);
+                                } else {
+                                    out.println("# Invalid: Use /gmsg <groupname> <msg>.");
+                                }
+                            } else {
+                                out.println("# Guests don't have access to this command.");
+                            }
+                        } else if (msg.startsWith("/gusers")) {
+                            if (this.userInfo.isLogged()) {
+                                String[] params = msg.split("\\s+", 2);
+                                if (params.length == 2 && params[0].equals("/gusers")) {
+                                    listGroupUsers(params[1]);
+                                } else {
+                                    out.println("# Invalid: Use /gusers <groupname>.");
                                 }
                             } else {
                                 out.println("# Guests don't have access to this command.");
@@ -288,6 +333,82 @@ public class SClientThread extends Thread {
         }
         out.println("# [Log] That username doesn't exist!");
         return null;
+    }
+
+    private synchronized void joinGroup(String groupName) {
+        boolean found = false;
+        for (Group g : ChatServer.groups) {
+            if (g.getName().equals(groupName)) {
+                found = true;
+                if(!g.getClients().contains(this.userInfo.getUsername())) {
+                    g.add(this.userInfo.getUsername());
+                    out.println("# Joined group " + groupName);
+                } else {
+                    out.println("# You are already in that group.");
+                }
+                break;
+            }
+        }
+        if (!found) {
+            ChatServer.createGroup(groupName, this.userInfo.getUsername());
+            out.println("# Creating group");
+        }
+    }
+
+    private synchronized void leaveGroup(String groupName) {
+        boolean found = false;
+        for (Group g : ChatServer.groups) {
+            if (g.getName().equals(groupName)) {
+                found = true;
+                if(g.remove(this.userInfo.getUsername())) {
+                    out.println("# Left group " + groupName);
+                } else {
+                    out.println("# You are not in that group.");
+                }
+                if (g.getClientsSize() == 0) {
+                    ChatServer.deleteGroup(g);
+                }
+                break;
+            }
+        }
+        if (!found) {
+            out.println("# Group doens't exist.");
+        }
+    }
+
+    private void sendMsgToGroup(String groupName, String msg) {
+        boolean found = false;
+        for (Group g : ChatServer.groups) {
+            if (g.getName().equals(groupName)) {
+                found = true;
+                for (String client : g.getClients()) {
+                    for (SClientThread t : threads) {
+                        if (t != null && t != this && t.userInfo.getUsername().equals(client)) {
+                            t.out.println("<" + groupName + "|" + this.userInfo.getUsername() + ">: " + msg);
+                        }
+                    }
+                }
+            }
+        }
+        if (!found) {
+            out.println("# Group not found.");
+        }
+    }
+    
+    private void listGroupUsers(String groupName) {
+        boolean found = false;
+        for(Group g : ChatServer.groups) {
+            if(g.getName().equals(groupName)) {
+                found = true;
+                out.println("# Users in group '" + groupName + "':");
+                for(String s : g.getClients()) {
+                    out.println("# " + s);
+                }
+                break;
+            }
+        }
+        if(!found)
+            out.println("# Group not found.");
     }
 
 }
