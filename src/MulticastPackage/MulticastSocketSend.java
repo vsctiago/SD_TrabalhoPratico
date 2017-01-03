@@ -52,9 +52,6 @@ public class MulticastSocketSend extends Thread {
         File[] files = dir.listFiles();
         for (File file : files) {
             if (!file.isDirectory()) {
-                //File[] recFiles = listDir(file);
-                //encTemp.addAll(Arrays.asList(recFiles));
-            //} else {
                 encTemp.add(file);
             }
         }
