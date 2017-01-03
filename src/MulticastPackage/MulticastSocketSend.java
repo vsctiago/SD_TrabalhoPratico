@@ -40,7 +40,7 @@ public class MulticastSocketSend extends Thread {
                 System.out.println("@ Files list updated!");
 
                 try {
-                    Thread.sleep(600000);
+                    Thread.sleep(600000); //10mim
                 } catch (InterruptedException e) { }
 
             }

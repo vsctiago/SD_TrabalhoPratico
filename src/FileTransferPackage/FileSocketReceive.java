@@ -26,7 +26,7 @@ public class FileSocketReceive extends Thread {
         try {
             serverSocket = new ServerSocket(portToSend);
         } catch (IOException ex) {
-            System.out.println("Can't setup server on this port number. ");
+            System.out.println("FileSocketReceive -> Can't setup server on this port number. ");
         }
 
         portToSend = serverSocket.getLocalPort();
@@ -38,13 +38,13 @@ public class FileSocketReceive extends Thread {
         try {
             socket = serverSocket.accept();
         } catch (IOException ex) {
-            System.out.println("Can't accept client connection. ");
+            System.out.println("FileSocketReceive -> Can't accept client connection. ");
         }
 
         try {
             in = socket.getInputStream();
         } catch (IOException ex) {
-            System.out.println("Can't get socket input stream. ");
+            System.out.println("FileSocketReceive -> Can't get socket input stream. ");
         }
 
         byte[] bytes = new byte[1024];
